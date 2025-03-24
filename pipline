@@ -1,0 +1,48 @@
+# Polars未対応のためExcel読込はpandasで → その後Polarsに変換してSGR計算
+import pandas as pd
+import polars as pl
+
+# ファイル名
+file_path = "/mnt/data/予測パイプライン_雛形.xlsx"
+
+# 必要なシートをpandasで読み込み → polarsに変換
+setting_df = pd.read_excel(file_path, sheet_name="設定")
+elasticity_df = pd.read_excel(file_path, sheet_name="弾性パラメータ")
+size_factor_df = pd.read_excel(file_path, sheet_name="企業規模パラメータ")
+region_factor_df = pd.read_excel(file_path, sheet_name="地域パラメータ")
+
+# Polarsに変換
+setting_pl = pl.DataFrame(setting_df)
+elasticity_pl = pl.DataFrame(elasticity_df)
+size_factor_pl = pl.DataFrame(size_factor_df)
+region_factor_pl = pl.DataFrame(region_factor_df)
+
+# 設定値の抽出
+target_industry = setting_pl.filter(pl.col("項目") == "業種（SICコード）").item(0, 1)
+target_region = setting_pl.filter(pl.col("項目") == "地域").item(0, 1)
+target_size = setting_pl.filter(pl.col("項目") == "企業規模").item(0, 1)
+
+gdp_growths = {
+    "2024": setting_pl.filter(pl.col("項目") == "2024年GDP成長率").item(0, 1),
+    "2025": setting_pl.filter(pl.col("項目") == "2025年GDP成長率").item(0, 1),
+    "2026": setting_pl.filter(pl.col("項目") == "2026年GDP成長率").item(0, 1),
+}
+
+# 各係数を取得
+E = elasticity_pl.filter(pl.col("分類") == target_industry).item(0, 1)
+F = size_factor_pl.filter(pl.col("企業規模") == target_size).item(0, 1)
+R = region_factor_pl.filter(pl.col("地域") == target_region).item(0, 1)
+
+# SGRを計算
+sgr_results = []
+for year, gdp in gdp_growths.items():
+    sgr = gdp * E * F * R
+    for q, w in zip(["Q1", "Q2", "Q3", "Q4"], [0.20, 0.25, 0.25, 0.30]):
+        sgr_results.append({
+            "年": int(year),
+            "四半期": q,
+            "SGR（構造モデル・%）": round(sgr * w * 100, 3)
+        })
+
+sgr_df = pl.DataFrame(sgr_results)
+import ace_tools as tools; tools.display_dataframe_to_user(name="SGR（構造モデル）年間・四半期別", dataframe=sgr_df)
