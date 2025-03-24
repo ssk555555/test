@@ -1,0 +1,48 @@
+import pandas as pd
+
+# Excelの雛形を作成する：5つのシート（設定、パラメータ、売上データ、予測出力、評価）
+
+# 1. 設定シート
+setting_df = pd.DataFrame({
+    '項目': ['業種（SICコード）', '地域', '企業規模', '2024年GDP成長率', '2025年GDP成長率', '2026年GDP成長率'],
+    '値': ['建設業[D]', '全国', '大企業', 0.3, 0.8, 0.9]
+})
+
+# 2. パラメータ（SICごとの弾性、企業規模係数、地域係数など）
+parameter_df = pd.DataFrame({
+    '分類': ['建設業[D]', '製造業[E]', '卸売・小売業[H]', 'サービス業[K,L]'],
+    '弾性値E': [1.2, 1.4, 1.5, 1.6]
+}).set_index('分類')
+
+size_factor_df = pd.DataFrame({
+    '企業規模': ['大企業', '中堅企業', '中小企業'],
+    '係数F': [1.0, 0.9, 0.8]
+}).set_index('企業規模')
+
+region_factor_df = pd.DataFrame({
+    '地域': ['全国', '北海道', '東北', '関東', '信越', '首都圏', '東海', '北陸', '関西', '中国', '四国', '九州', '沖縄'],
+    '係数R': [1.0, 1.0, 1.0, 1.1, 1.0, 1.2, 1.1, 1.0, 1.1, 1.0, 1.0, 1.1, 0.8]
+}).set_index('地域')
+
+# 3. 売上データ（空欄 or 擬似データで後から補完）
+sales_df = pd.DataFrame(columns=['期', '売上高（億円）'])
+
+# 4. 予測出力と 5. 評価も空欄で初期化
+forecast_output_df = pd.DataFrame(columns=[
+    '期', 'ARIMA予測', '構造モデル予測', 'ハイブリッド予測'
+])
+evaluation_df = pd.DataFrame(columns=[
+    'モデル', 'MAE', 'RMSE', 'MAPE'
+])
+
+# Excel書き出し
+with pd.ExcelWriter("/mnt/data/予測パイプライン_雛形.xlsx") as writer:
+    setting_df.to_excel(writer, sheet_name='設定', index=False)
+    parameter_df.to_excel(writer, sheet_name='弾性パラメータ')
+    size_factor_df.to_excel(writer, sheet_name='企業規模パラメータ')
+    region_factor_df.to_excel(writer, sheet_name='地域パラメータ')
+    sales_df.to_excel(writer, sheet_name='売上データ', index=False)
+    forecast_output_df.to_excel(writer, sheet_name='予測出力', index=False)
+    evaluation_df.to_excel(writer, sheet_name='評価', index=False)
+
+"/mnt/data/予測パイプライン_雛形.xlsx"
