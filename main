@@ -1,0 +1,2427 @@
+'必要なコンボボックスのリストはglobal変数として最初に定義してみる
+Dim ComboBoxData As Collection
+Dim ControlHandler() As clsControlHandler
+Private companyPlans As Object
+Public isPlanChange As Boolean
+
+
+Private Sub Check_bi_tn_Click()
+Call Change_CheckBox(Me.Check_bi_tn, Frame_bi_tn)
+
+'選択したら、トグルon,1個しかないからトグルは非表示でいいや
+If Check_bi_tn.Value = True Then
+    Toggle_bi_tn.Visible = False
+    Toggle_bi_tn.Value = True
+Else
+    Toggle_bi_tn.Value = False
+End If
+End Sub
+
+Private Sub Check_const_tn_Click()
+Call Change_CheckBox(Me.Check_const_tn, frame_const_tn)
+'金額が１種類のやつらはコンボボックスを非表示でいいや
+
+If Check_const_tn.Value = True Then
+    Label_const_tn.Visible = True
+    Toggle_const_tn.Visible = False
+    Toggle_const_tn.Value = True
+    Combo_maintenance_tn.Visible = False
+    Combo_material_tn.Visible = False
+    Combo_temp_tn.Visible = False
+    Combo_expense_tn.Visible = False
+Else
+    Label_const_tn.Visible = False
+    Toggle_const_tn.Value = False
+    
+End If
+
+
+End Sub
+
+Private Sub Check_mini_tn_Click()
+
+'ミニにチェックが入ったときだけコンボボックスの中身を変更
+If Check_mini_tn.Value = True Then
+    Combo_cyber_tn.Clear
+    Combo_cyber_tn.AddItem "金額選択"
+    Combo_cyber_tn.AddItem "3,000万円"
+    Combo_cyber_tn.AddItem "5,000万円"
+    Combo_cyber_tn.AddItem "1億円"
+    Combo_cyber_tn.ListIndex = 0
+Else
+    Combo_cyber_tn.Clear
+    Combo_cyber_tn.AddItem "金額選択"
+    Combo_cyber_tn.AddItem "50万円"
+    Combo_cyber_tn.AddItem "1,000万円"
+    Combo_cyber_tn.AddItem "3,000万円"
+    Combo_cyber_tn.AddItem "5,000万円"
+    Combo_cyber_tn.AddItem "1億円"
+    Combo_cyber_tn.AddItem "3億円"
+    Combo_cyber_tn.ListIndex = 0
+    
+    
+    
+End If
+End Sub
+
+
+'チェックボックス関連の制御
+Private Sub Check_property_tn_Click()
+Call Change_CheckBox(Me.Check_property_tn, frame_property_tn)
+
+'選択したら、メインのトグルon,トグルは非表示でいいや
+If Check_property_tn.Value = True Then
+    Toggle_property_tn.Visible = False
+    Toggle_property_tn.Value = True
+    
+    '設定不要なコンボボックス非表示
+    Combo_baileesupplied_tn.Visible = False
+    Combo_lease_tn.Visible = False
+Else
+    Toggle_property_tn.Value = False
+End If
+
+
+End Sub
+
+Private Sub Check_cyber_tn_Click()
+Call Change_CheckBox(Me.Check_cyber_tn, frame_cyber_tn)
+'ミニのチェックボックスも制御
+If Check_cyber_tn.Value = True Then
+    Check_mini_tn.Visible = True
+    
+    Toggle_cyber_tn.Visible = False
+    Toggle_cyber_tn.Value = True
+    
+Else
+    Check_mini_tn.Value = False
+    Toggle_cyber_tn.Value = False
+End If
+
+'選択したら、トグルon,1個しかないからトグルは非表示でいいや
+'If Check_cyber_tn.Value = True Then
+'    Toggle_cyber_tn.Visible = False
+'    Toggle_cyber_tn.Value = True
+'Else
+'    Toggle_cyber_tn.Value = False
+'End If
+
+
+End Sub
+
+Private Sub Check_movable_tn_Click()
+Call Change_CheckBox(Me.Check_movable_tn, frame_movable_tn)
+
+'選択したら、トグルon,1個しかないからトグルは非表示でいいや
+'なんなら金額も１種類なのでコンボボックスも非表示でいいや
+If Check_movable_tn.Value = True Then
+    Toggle_movable_tn.Visible = False
+    Toggle_movable_tn.Value = True
+    Combo_movable_tn.Visible = False
+Else
+    Toggle_movable_tn.Value = False
+End If
+
+End Sub
+
+Private Sub Check_recall_tn_Click()
+Call Change_CheckBox(Me.Check_recall_tn, frame_recall_tn)
+
+'選択したら、トグルon,1個しかないからトグルは非表示でいいや
+If Check_recall_tn.Value = True Then
+    Toggle_recall_tn.Visible = False
+    Toggle_recall_tn.Value = True
+Else
+    Toggle_recall_tn.Value = False
+End If
+
+End Sub
+
+Private Sub Check_rent_tn_Click()
+Call Change_CheckBox(Me.Check_rent_tn, frame_rent_tn)
+
+'選択したら、トグルon,1個しかないからトグルは非表示でいいや
+If Check_rent_tn.Value = True Then
+    Toggle_rent_tn.Visible = False
+    Toggle_rent_tn.Value = True
+Else
+    Toggle_rent_tn.Value = False
+End If
+
+End Sub
+
+Private Sub Check_lawyer_tn_Click()
+Call Change_CheckBox(Me.Check_lawyer_tn, frame_lawyer_tn)
+
+'選択したら、トグルon,1個しかないからトグルは非表示でいいや
+'なんなら金額も１種類なのでコンボボックスも非表示でいいや
+If Check_lawyer_tn.Value = True Then
+    Toggle_lawyer_tn.Visible = False
+    Combo_lawyer_tn.Visible = False
+    Toggle_lawyer_tn.Value = True
+Else
+    Toggle_lawyer_tn.Value = False
+End If
+
+End Sub
+
+Private Sub Check_el_tn_Click()
+Call Change_CheckBox(Me.Check_el_tn, frame_el_tn)
+
+'選択したら、トグルon,1個しかないからトグルは非表示でいいや
+If Check_el_tn.Value = True Then
+    Toggle_el_tn.Visible = False
+    Toggle_el_tn.Value = True
+Else
+    Toggle_el_tn.Value = False
+End If
+
+End Sub
+
+
+
+'ミニの時に費用の金額が変わるのでその分岐
+
+Private Sub Combo_cyber_tn_Change()
+
+If Combo_cyber_tn.Value = "1,000万円" Then
+   cyber_expence_value.Caption = "200万円"
+   
+ElseIf Combo_cyber_tn.Value = "3,000万円" Then
+       cyber_expence_value.Caption = "1,000万円"
+
+ElseIf Combo_cyber_tn.Value = "5,000万円" Then
+       cyber_expence_value.Caption = "2,000万円"
+       
+ElseIf Combo_cyber_tn.Value = "1億円" Then
+       cyber_expence_value.Caption = "3,000万円"
+
+ElseIf Combo_cyber_tn.Value = "3億円" Then
+       cyber_expence_value.Caption = "3,000万円"
+
+'商工会プラン追加
+ElseIf Combo_cyber_tn.Value = "50万円" Then
+       cyber_expence_value.Caption = "50万円"
+
+Else
+       cyber_expence_value.Caption = ""
+End If
+End Sub
+
+Private Sub reset_Click()
+'フォームを一回閉じてリセットさせる
+Unload Me
+
+'再度ロード
+Load Main
+Main.Show vbModeless
+
+End Sub
+
+Private Sub save_Click()
+
+Dim saveAsFile As String
+Dim newBook As Workbook
+Dim shp As Shape
+
+'保存先とファイル名を取得
+With Application.FileDialog(msoFileDialogSaveAs)
+    .Title = "保存先を選択してください"
+    .InitialFileName = "補償内容簡易比較_XXX.xlsx"
+    .FilterIndex = 1
+    
+    'OKで保存
+    If .Show = -1 Then
+        saveAsFile = .SelectedItems(1)
+    Else
+        MsgBox "保存がキャンセルされました", vbInformation
+        Exit Sub
+    End If
+End With
+
+'シートのレイアウトをそのまま新しいブックへコピーしたい
+ThisWorkbook.Sheets("Template_ALL_test").Copy
+Set newBook = ActiveWorkbook
+
+'シート上の余計なボタンを削除
+For Each shp In newBook.Sheets(1).Shapes
+    If shp.Type = msoFormControl Then
+        shp.Delete
+    End If
+Next shp
+
+With newBook.Sheets(1).PageSetup
+    .PrintArea = "C1:I78"
+    .Orientation = xlPortrait
+    .Zoom = False
+    .FitToPagesWide = 1
+    .FitToPagesTall = 1
+End With
+    
+'マクロ不能ブックとして保存
+Application.DisplayAlerts = False '警告をキャンセル
+newBook.SaveAs fileName:=saveAsFile, FileFormat:=xlOpenXMLWorkbook
+Application.DisplayAlerts = True
+
+'新しいブックは閉じる
+newBook.Close savechanges:=False
+
+'保存完了後の処理
+MsgBox "保存が完了しました" & saveAsFile, vbInformation
+
+
+End Sub
+
+'工事用物損害の付帯が必要な特約
+
+Private Sub Toggle_const_as_Click()
+    
+If Toggle_const_as.Value = True Then
+    Toggle_movable_as.Visible = True
+    Toggle_temp_as.Visible = True
+    Toggle_maintenance_as.Visible = True
+    Toggle_warranty_as.Visible = True
+
+Else
+    Toggle_movable_as.Value = False
+    Toggle_temp_as.Value = False
+    Toggle_maintenance_as.Value = False
+    Toggle_warranty_as.Value = False
+    
+    Toggle_movable_as.Visible = False
+    Toggle_temp_as.Visible = False
+    Toggle_maintenance_as.Visible = False
+    Toggle_warranty_as.Visible = False
+    
+    Combo_movable_as.Clear
+    Combo_temp_as.Clear
+    Combo_maintenance_as.Clear
+    Combo_warranty_as.Clear
+   
+    
+End If
+
+
+End Sub
+
+'サイバーは個人情報漏洩の付帯が必要
+
+Private Sub Toggle_cyber_as_Click()
+
+If Toggle_cyber_as.Value = True Then
+    Toggle_cyberattack_as.Visible = True
+    Toggle_security_as.Visible = True
+    Toggle_information_as.Visible = True
+
+Else
+    Toggle_cyberattack_as.Value = False
+    Toggle_security_as.Value = False
+    Toggle_information_as.Value = False
+    
+    Toggle_cyberattack_as.Visible = False
+    Toggle_security_as.Visible = False
+    Toggle_information_as.Visible = False
+    
+    Combo_cyberattack_as.Clear
+    Combo_security_as.Clear
+    Combo_information_as.Clear
+   
+    
+End If
+
+
+End Sub
+
+
+
+Private Sub Toggle_cyber_sj_Click()
+
+If Toggle_cyber_sj.Value = True Then
+
+      Call LoadComboBox(Combo_cyber_sj, "col102")
+      Combo_cyber_sj.ListIndex = 0
+Else
+      Combo_cyber_sj.Clear
+      Combo_cyber_sj.AddItem "付帯無し"
+      Combo_cyber_sj.ListIndex = 0
+End If
+End Sub
+
+Private Sub Toggle_lease_tn_Click()
+
+'トグルonの場合はリースレンタル盗取詐取特約を表示させる
+'なんなら金額も１種類なのでコンボボックスも非表示でいいや
+If Toggle_lease_tn.Value = True Then
+    Toggle_leaseOp_tn.Visible = True
+    Combo_leaseOp_tn.Visible = False
+
+Else
+    Toggle_leaseOp_tn.Value = False
+    Toggle_leaseOp_tn.Visible = False
+    Combo_leaseOp_tn.Visible = False
+    Combo_leaseOp_tn.Clear
+End If
+End Sub
+
+'事業用動産クリックしたらコンボボックス表示
+Private Sub Toggle_movable_as_Click()
+
+If Toggle_movable_as.Value = True Then
+    Combo_movable_as.Visible = True
+
+Else
+    Combo_movable_as.Visible = False
+    
+    Combo_movable_as.Clear
+    
+End If
+End Sub
+
+'賠責プロは製造業と建設業EOをどちらもカバーする
+'トグルOnにすると対応する2つのトグルがonになる（非表示）
+Private Sub Toggle_pro_sj_Click()
+If Toggle_pro_sj.Value = True Then
+    Toggle_eo_sj.Value = True
+    Toggle_eoC_sj.Value = True
+Else
+    Toggle_eo_sj.Value = False
+    Toggle_eoC_sj.Value = False
+
+End If
+
+
+End Sub
+
+
+Private Sub UserForm_Initialize()
+
+'ユーザーフォームおしゃれ化
+Call CustomizeUserForm
+
+'コンボボックスとか読み込み
+
+Dim ws As Worksheet
+Dim table As ListObject
+'Dim col1 As Range, col2 As Range, col3 As Range, col4 As Range
+Dim rng As Range
+Dim cell As Range
+Dim colIndex As Integer
+Dim colData As Collection
+Dim ctrl As Control
+Dim i As Integer
+Dim controlCount As Integer
+
+
+
+
+'コレクションを初期化
+Set ComboBoxData = New Collection
+
+'ComboBoxシートのテーブルから必要な情報を取得する
+
+Set ws = ThisWorkbook.Sheets("ComboBOX")
+Set table = ws.ListObjects("Basic_Info")
+
+For colIndex = 1 To table.ListColumns.Count
+    Set colData = New Collection
+    Set rng = table.ListColumns(colIndex).DataBodyRange
+    For Each cell In rng
+    '空のカラムはスキップする
+        If Not IsEmpty(cell.Value) Then
+            colData.Add cell.Value
+        End If
+    Next cell
+    ComboBoxData.Add colData, table.ListColumns(colIndex).Name
+Next colIndex
+
+'colNoとComboBoxNameの組み合わせを参照するため
+Set table = Nothing
+Set table = ws.ListObjects("Col_info")
+
+
+'デフォルト表示のコンボボックスにリストを追加
+
+
+LoadComboBox Combo_Limit, "col1" '他社基本補償支払限度額
+LoadComboBox Combo_Deductible, "col2" '他社基本補償免責金額
+LoadComboBox Combo_Limit_AS, "col3" 'ALLSTARs支払限度額
+LoadComboBox Combo_Deductible_AS, "col4" 'ALLSTARs免責金額
+
+
+'プラン情報管理
+Set companyPlans = CreateObject("Scripting.dictionary")
+
+companyPlans.Add "MS", Array("ベーシック", "ワイド")
+companyPlans.Add "SJ", Array("エコノミー", "ワイド")
+companyPlans.Add "TN", Array("①：施設事業活動のみ", "②：生産物完成作業のみ", "① + ② セット")
+
+'コントロール管理
+controlCount = 0
+For Each ctrl In Me.Controls
+    If TypeOf ctrl Is MSForms.ToggleButton Or TypeOf ctrl Is MSForms.combobox Then
+        controlCount = controlCount + 1
+    End If
+Next ctrl
+
+    'コントロール用配列サイズを宣言
+ReDim ControlHandler(1 To controlCount)
+
+    '各トグルとコンボボックスにイベントを設定
+i = 1
+For Each ctrl In Me.Controls
+    If TypeOf ctrl Is MSForms.ToggleButton Then
+        Set ControlHandler(i) = New clsControlHandler
+        Set ControlHandler(i).Toggle = ctrl
+        Set ControlHandler(i).MainForm = Me 'フォームのインスタンス化
+        
+        'Col_infoテーブルからcomboboxと対応するcolNoを取得する
+        Dim ComboBoxName As String
+        Dim colNo As String
+        Dim foundCell As Range
+        
+        ComboBoxName = ""
+        
+        'comboboxName列で一致するセルを探す
+        Set foundCell = table.ListColumns("ToggleName").DataBodyRange.Find(what:=ctrl.Name, LookIn:=xlValues, lookat:=xlWhole)
+        
+        If Not foundCell Is Nothing Then
+        '一致する場合は対応するColNoを取得
+        colNo = table.ListColumns("ColNo").DataBodyRange.Cells(foundCell.Row - table.DataBodyRange.Row + 1, 1).Value
+        ComboBoxName = table.ListColumns("ComboBoxName").DataBodyRange.Cells(foundCell.Row - table.DataBodyRange.Row + 1, 1).Value
+        
+        Dim comboBoxControl As Object
+        Set comboBoxControl = Me.Controls(ComboBoxName)
+        
+        End If
+        'コンボボックスとcolnoの設定
+        If Not comboBoxControl Is Nothing Then
+            Set ControlHandler(i).combobox = comboBoxControl
+            ControlHandler(i).ColName = colNo
+        End If
+
+        i = i + 1
+    
+    ElseIf TypeOf ctrl Is MSForms.combobox Then
+        Set ControlHandler(i) = New clsControlHandler
+        Set ControlHandler(i).combobox = ctrl
+        
+        i = i + 1
+
+    End If
+
+    
+Next ctrl
+
+
+'マルチページは最初は非表示
+MultiPage1.Visible = False
+
+
+End Sub
+
+
+
+
+Private Sub CustomizeUserForm()
+'ユーザーフォームをおしゃれにするよ
+
+With Me
+    .BackColor = RGB(225, 235, 245) '薄い系の青
+    .Font.Name = "Calibri"
+    .Font.Size = 11
+End With
+
+Dim ctrl As Control
+'フォーム上の各コントロールをオシャレに
+
+For Each ctrl In Me.Controls
+    'コマンドボタン
+    If TypeOf ctrl Is MSForms.CommandButton Then
+        With ctrl
+            .BackColor = RGB(100, 149, 237) '青
+            .ForeColor = RGB(255, 255, 255) '白
+            .Font.Name = "Calibri"
+            .Font.Size = 11
+
+        End With
+    
+    'テキストボックス
+    ElseIf TypeOf ctrl Is MSForms.TextBox Then
+        With ctrl
+            .BackColor = RGB(245, 245, 255) '薄い青
+            .ForeColor = RGB(0, 0, 128) '濃い青
+            .BorderStyle = fmBorderStyleSingle '枠線
+            .Font.Name = "Calibri"
+            .Font.Size = 11
+        End With
+
+    'トグルボタン
+    ElseIf TypeOf ctrl Is MSForms.ToggleButton Then
+        With ctrl
+            .BackColor = RGB(173, 216, 230) 'ライトブルー
+            .ForeColor = RGB(0, 0, 128) '濃い青
+            .Font.Name = "Calibri"
+            .Font.Size = 9
+        End With
+        
+    'ラベル
+    ElseIf TypeOf ctrl Is MSForms.Label Then
+        With ctrl
+            .BackStyle = fmBackStyleTransparent ' 背景透過
+            .ForeColor = RGB(0, 0, 128) '濃い青
+            .Font.Name = "Calibri"
+            .Font.Size = 11
+        
+        End With
+
+    'リストボックス
+    ElseIf TypeOf ctrl Is MSForms.ListBox Then
+        With ctrl
+            .BackColor = RGB(245, 245, 255) 'ホワイトブルー
+            .ForeColor = RGB(0, 0, 128) '濃い青
+            .BorderStyle = fmBorderStyleSingle '枠線
+            .Font.Name = "Calibri"
+            .Font.Size = 8
+        End With
+        
+    'コンボボックス
+    ElseIf TypeOf ctrl Is MSForms.combobox Then
+        With ctrl
+            .BackColor = RGB(245, 245, 255) 'ホワイトブルー
+            .ForeColor = RGB(0, 0, 128) '濃い青
+            .BorderStyle = fmBorderStyleSingle '枠線
+            .Font.Name = "Calibri"
+            .Font.Size = 9
+        End With
+        
+    'チェックボックス
+    ElseIf TypeOf ctrl Is MSForms.CheckBox Then
+        With ctrl
+            .BackStyle = fmBackStyleTransparent ' 背景透過
+            .ForeColor = RGB(0, 0, 128) '濃い青
+            .Font.Name = "Calibri"
+            .Font.Size = 11
+        End With
+        
+      'オプションボタン
+    ElseIf TypeOf ctrl Is MSForms.OptionButton Then
+        With ctrl
+            .BackStyle = fmBackStyleTransparent ' 背景透過
+            .ForeColor = RGB(0, 0, 128) '濃い青
+            .Font.Name = "Calibri"
+            .Font.Size = 11
+        End With
+        
+      'フレーム
+    ElseIf TypeOf ctrl Is MSForms.frame Then
+        With ctrl
+            '.BackColor = RGB(200, 220, 240) 'ちょい青
+            .BackColor = RGB(225, 235, 245)
+            .ForeColor = RGB(0, 0, 128) '濃い青
+            .Font.Name = "Calibri"
+            .Font.Size = 11
+        End With
+        
+      'マルチページ
+    ElseIf TypeOf ctrl Is MSForms.MultiPage Then
+        With ctrl
+            '.BackColor = RGB(200, 220, 240) 'ちょい青
+            .BackColor = RGB(225, 235, 245)
+            .ForeColor = RGB(0, 0, 128) '濃い青
+            .Font.Name = "Calibri"
+            .Font.Size = 11
+        End With
+        
+    End If
+    
+Next ctrl
+
+
+End Sub
+
+'コンボボックスの中身をロードするよ
+
+Public Sub LoadComboBox(cmb As MSForms.combobox, columnName As String)
+
+Dim colData As Collection
+Dim item As Variant
+
+'コンボボックスをクリア
+cmb.Clear
+
+'対応するカラムのデータを取得
+Set colData = ComboBoxData(columnName)
+
+'データをロード
+For Each item In colData
+    cmb.AddItem item
+Next item
+
+End Sub
+
+'リストボックスにプランを表示するよ...TNが簡単だったのでもっとシンプルで良かった
+
+Private Sub PopulatePlans(ByVal Company As String)
+    ListBox1.Clear
+    
+    If companyPlans.exists(Company) Then
+        Dim plans As Variant
+        plans = companyPlans(Company)
+
+        Dim i As Integer
+        For i = LBound(plans) To UBound(plans)
+            ListBox1.AddItem plans(i)
+        Next i
+    End If
+
+
+    'TNもsingle selectで良くなったため、companyの分岐は無効にしておく
+    If Company = "" Then
+        ListBox1.MultiSelect = fmMultiSelectMulti
+    Else
+        ListBox1.MultiSelect = fmMultiSelectSingle
+    End If
+
+
+End Sub
+
+
+Private Sub OptionButton_TN_Click()
+
+    If OptionButton_TN.Value = True Then
+    'プランを表示
+        PopulatePlans "TN"
+    
+    'TNに切り替え
+    '   TabStrip1.Value = 0　tabstripじゃなくてmultipageを使うように変更
+        MultiPage1.Visible = True
+    
+
+    'page名は選択したやつだけ(0=TN,1=MS,2=SJ)
+        MultiPage1.Pages(0).Visible = True
+        MultiPage1.Pages(1).Visible = False
+        MultiPage1.Pages(2).Visible = False
+        MultiPage1.Pages(3).Visible = False
+        
+        MultiPage1.Value = 0
+        
+    'SJの時のみ受託基本補償分を表示
+        Label_basicBailee_sj.Visible = False
+        Combo_basicBailee_sj.Visible = False
+            
+    End If
+End Sub
+
+
+Private Sub OptionButton_MS_Click()
+
+    If OptionButton_MS.Value = True Then
+    'プランを表示
+        PopulatePlans "MS"
+        
+    'MSに切り替え
+    '   TabStrip1.Value = 1 tabstripじゃなくてmultipageを使うように変更
+        MultiPage1.Visible = True
+    
+
+    'page名は選択したやつだけ(0=TN,1=MS,2=SJ)
+        MultiPage1.Pages(0).Visible = False
+        MultiPage1.Pages(1).Visible = True
+        MultiPage1.Pages(2).Visible = False
+        MultiPage1.Pages(3).Visible = False
+        
+        MultiPage1.Value = 1
+        
+    'SJの時のみ受託基本補償分を表示
+        Label_basicBailee_sj.Visible = False
+        Combo_basicBailee_sj.Visible = False
+        
+    End If
+    
+End Sub
+
+Private Sub OptionButton_SJ_Click()
+
+    If OptionButton_SJ.Value = True Then
+    'プランを表示
+        PopulatePlans "SJ"
+    'SJに切り替え
+    '   TabStrip1.Value = 2　tabstripじゃなくてmultipageを使うように変更
+        MultiPage1.Visible = True
+     
+
+    'page名は選択したやつだけ(0=TN,1=MS,2=SJ)
+        MultiPage1.Pages(0).Visible = False
+        MultiPage1.Pages(1).Visible = False
+        MultiPage1.Pages(2).Visible = True
+        MultiPage1.Pages(3).Visible = False
+        
+        MultiPage1.Value = 2
+        
+    'SJの時のみ受託基本補償分を表示
+        Label_basicBailee_sj.Visible = True
+        Combo_basicBailee_sj.Visible = True
+        
+        Combo_basicBailee_sj.Clear
+        Combo_basicBailee_sj.AddItem "100万円"
+        Combo_basicBailee_sj.AddItem "500万円"
+        Combo_basicBailee_sj.AddItem "1,000万円"
+        
+    End If
+  
+End Sub
+
+'ASおすすめプランボタンをクリックしたときにマルチページに表示、チェック外したら非表示
+Private Sub CheckBox_AS_Plan_Click()
+If CheckBox_AS_Plan.Value = True Then
+    MultiPage1.Pages(3).Visible = True
+    MultiPage1.Value = 3
+ElseIf CheckBox_AS_Plan.Value = False Then
+    MultiPage1.Pages(3).Visible = False
+End If
+End Sub
+
+'プランを選択した際に、付帯不可のものについては見えなくさせるよ
+
+'SJ
+'サイバー：economyではオプション、wideでは基本補償
+'工事物ユニット：economyではメインテナンスのみ、wideで工事用仮設備を追加できる
+'休業ユニット：economyではCasualty部分なし、wideのみ食中毒・感染症による休業が追加できる
+'製造物自体の損害：economyでは付帯不可
+
+'TN
+'①のみの場合：不良完成品、仕事の目的物、納期遅延は付帯不可
+'②のみの場合：地盤崩壊付帯不可
+
+Private Sub ListBox1_Click()
+'トグルonが反応しないように制御,各トグルはここで個別に関数を呼び出して押す
+'isPlanChange = True
+
+If OptionButton_SJ.Value = True Then
+
+    
+    If ListBox1.Value = "ワイド" Then
+
+      Toggle_cyber_sj.Value = True
+      Call LoadComboBox(Combo_cyber_sj, "col102")
+      Combo_cyber_sj.ListIndex = 0
+      
+      '工事物ユニットの工事用仮設備、休業ユニットを表示
+      Toggle_temp_sj.Visible = True
+      frame_bi_sj.Visible = True
+      
+    Else
+      Toggle_cyber_sj.Value = False
+'      Combo_cyber_sj.Clear
+ '     Combo_cyber_sj.AddItem "付帯無し"
+  '    Combo_cyber_sj.ListIndex = 0
+      
+      '工事物ユニットの工事用仮設備、休業ユニットを非表示
+      Toggle_temp_sj.Visible = False
+      Combo_temp_sj.Visible = False
+      frame_bi_sj.Visible = False
+      
+      '念のため内容クリア
+      Toggle_temp_sj.Value = False
+      Combo_temp_sj.Clear
+      Combo_temp_sj.AddItem "付帯無し"
+      Combo_temp_sj.ListIndex = 0
+      
+      Toggle_bi_sj.Value = False
+      Combo_bi_sj.Clear
+      Combo_bi_sj.AddItem "付帯無し"
+      Combo_bi_sj.ListIndex = 0
+      
+    End If
+    
+ElseIf OptionButton_TN.Value = True Then
+    If ListBox1.Value = "①：施設事業活動のみ" Then
+    '金額が１つしかないコンボボックスは非表示のままでok
+    
+        Toggle_defects_tn.Visible = False
+        Toggle_defects_tn.Value = False
+        Combo_defects_tn.Visible = False
+        Combo_defects_tn.Clear
+               
+        Toggle_object_tn.Visible = False
+        Toggle_object_tn.Value = False
+        Combo_object_tn.Visible = False
+        Combo_object_tn.Clear
+        
+        Toggle_eo_tn.Visible = False
+        Toggle_eo_tn.Value = False
+        Combo_eo_tn.Visible = False
+        Combo_eo_tn.Clear
+        
+        Toggle_jiban_tn.Visible = True
+        'Toggle_jiban_tn.Value = True
+        Combo_jiban_tn.Visible = False
+        'Combo_jiban_tn.Clear
+        
+    ElseIf ListBox1.Value = "②：生産物完成作業のみ" Then
+        
+        Toggle_defects_tn.Visible = True
+        'Toggle_defects_tn.Value = True
+        Combo_defects_tn.Visible = True
+        'Combo_defects_tn.Clear
+               
+        Toggle_object_tn.Visible = True
+        'Toggle_object_tn.Value = True
+        Combo_object_tn.Visible = False
+        'Combo_object_tn.Clear
+        
+        Toggle_eo_tn.Visible = True
+        'Toggle_eo_tn.Value = True
+        Combo_eo_tn.Visible = False
+        'Combo_eo_tn.Clear
+        
+        Toggle_jiban_tn.Visible = False
+        Toggle_jiban_tn.Value = False
+        Combo_jiban_tn.Visible = False
+        'Combo_jiban_tn.Clear
+    Else
+                
+        Toggle_defects_tn.Visible = True
+        'Toggle_defects_tn.Value = True
+        Combo_defects_tn.Visible = True
+        'Combo_defects_tn.Clear
+               
+        Toggle_object_tn.Visible = True
+        'Toggle_object_tn.Value = True
+        Combo_object_tn.Visible = False
+        'Combo_object_tn.Clear
+        
+        Toggle_eo_tn.Visible = True
+        'Toggle_eo_tn.Value = True
+        Combo_eo_tn.Visible = False
+        'Combo_eo_tn.Clear
+        
+        Toggle_jiban_tn.Visible = True
+        'Toggle_jiban_tn.Value = False
+        Combo_jiban_tn.Visible = False
+        'Combo_jiban_tn.Clear
+    End If
+End If
+'トグルonが反応しないように制御
+'isPlanChange = False
+
+End Sub
+
+'checkboxのオンオフでフレーム内の情報の表示等切り替える
+Private Sub Change_CheckBox(chkBox As MSForms.CheckBox, frame As MSForms.frame)
+Dim ctrl As Control
+    
+    If chkBox.Value = True Then
+        'チェックボックスon時は見えるように
+        For Each ctrl In frame.Controls
+            If TypeOf ctrl Is ToggleButton Then
+                'ctrl.Value = False
+                ctrl.Visible = True
+            ElseIf TypeOf ctrl Is combobox Then
+                'ctrl.Clear
+                ctrl.Visible = True
+            End If
+        Next ctrl
+        
+    ElseIf chkBox.Value = False Then
+        'チェックが外れた場合は、フレーム内を全リセットして見えなくさせる
+        For Each ctrl In frame.Controls
+            If TypeOf ctrl Is ToggleButton Then
+                ctrl.Value = False
+                ctrl.Visible = False
+            ElseIf TypeOf ctrl Is combobox Then
+                ctrl.Clear
+                ctrl.Visible = False
+            End If
+        Next ctrl
+    End If
+
+End Sub
+
+
+
+'出力ボタンの設定、コンボボックスで選択した内容を転記していく
+
+Private Sub Export_Click()
+
+Dim Company As String
+Dim sheetName As String
+Dim wsTemplate As Worksheet
+Dim errorMsg As String
+Dim selectedPlans As String
+
+'出力先の決定と必須項目の入力確認
+
+On Error Resume Next
+If OptionButton_TN = True Then
+    Company = "TN"
+ElseIf OptionButton_MS = True Then
+    Company = "MS"
+ElseIf OptionButton_SJ = True Then
+    Company = "SJ"
+Else
+    errorMsg = "会社を選択してください"
+
+End If
+
+
+'Dim i As Integer
+'If Company = "TN" Then
+'    For i = 0 To ListBox1.ListCount - 1
+'        If ListBox1.Selected(i) Then
+'            selectedPlans.Add ListBox1.List(i)
+'        End If
+'    Next i
+    
+'ElseIf Company = "MS" Or Company = "SJ" Then
+    If ListBox1.ListIndex <> -1 Then '選択されている場合
+        selectedPlans = ListBox1.Value
+    End If
+
+'End If
+    
+If selectedPlans = "" Then
+    If errorMsg <> "" Then
+        errorMsg = errorMsg & vbCrLf & "プランを選択してください"
+    Else
+        errorMsg = "プランを選択してください"
+    End If
+        
+End If
+
+
+If Combo_Limit.Value = "" Then
+    If errorMsg <> "" Then
+        errorMsg = errorMsg & vbCrLf & "他社支払限度額を選択してください"
+    Else
+        errorMsg = "他社支払限度額を選択してください"
+    End If
+        
+End If
+
+If Combo_Deductible.Value = "" Then
+    If errorMsg <> "" Then
+        errorMsg = errorMsg & vbCrLf & "他社免責金額を選択してください"
+    Else
+        errorMsg = "他社免責金額を選択してください"
+    End If
+
+End If
+
+If Premium.Value = "" Then
+    If errorMsg <> "" Then
+        errorMsg = errorMsg & vbCrLf & "他社保険料を入力してください"
+    Else
+        errorMsg = "他社保険料を入力してください"
+    End If
+
+End If
+
+If Combo_Limit_AS.Value = "" Then
+    If errorMsg <> "" Then
+        errorMsg = errorMsg & vbCrLf & "当社支払限度額を選択してください"
+    Else
+        errorMsg = "当社支払限度額を選択してください"
+    End If
+
+End If
+
+If Combo_Deductible_AS.Value = "" Then
+    If errorMsg <> "" Then
+        errorMsg = errorMsg & vbCrLf & "当社免責金額を選択してください"
+    Else
+        errorMsg = "当社免責金額を選択してください"
+    End If
+
+End If
+
+'ASおすすめで強化（個別）プランを選んだ際に、受託か目的物の個別が同時に選択されている事の確認
+
+If (InStr(Combo_asbestos_as.Value, "【個別】") > 0 Or InStr(Combo_data_as.Value, "【個別】") Or InStr(Combo_cylinder_as.Value, "【個別】") Or InStr(Combo_pdxs_as.Value, "【個別】") Or InStr(Combo_brand_as.Value, "【個別】")) And InStr(Combo_object_as.Value, "【個別】") = 0 And InStr(Combo_bailee_as.Value, "【個別】") = 0 Then
+    If errorMsg <> "" Then
+        errorMsg = errorMsg & vbCrLf & "受託物もしくは目的物で個別プランを選択してください"
+    Else
+        errorMsg = "受託物もしくは目的物で個別プランを選択してください"
+    End If
+
+End If
+
+
+
+'エラーを表示
+If errorMsg <> "" Then
+    MsgBox errorMsg, vbExclamation
+    Exit Sub
+End If
+
+'ターゲットのシートを決定する → ターゲットシートは固定
+'sheetName = "Template_" & Company
+sheetName = "Template_ALL_test"
+Set wsTemplate = ThisWorkbook.Sheets(sheetName)
+
+
+'コンボボックスの内容を転記していく
+'テンプレの行がズレる場合は、直接指定している番地を1つずつずらす…
+If Company = "MS" Then
+    Call Export_Mapping(Company)
+    Call Export_Plan(Company, selectedPlans)
+    Call Format_Cell_Value(wsTemplate)
+    
+
+    '工事用物損害だけ特殊なので直接指定する,類似プランもここでやっちゃう
+    If Toggle_const_ms.Value = True Then
+        wsTemplate.Range("F66").Value = "対象工事毎の請負金額または10億円のいずれか低い額（火災・落雷・破裂・爆発を除き、盗難・その他の損害　免責5万円）"
+        wsTemplate.Range("F67").Value = "対象工事毎の請負金額または1000万円のいずれか低い額（盗難　免責10万円、火災・落雷・破裂・爆発以外の損害　免責100万円）"
+        wsTemplate.Range("F68").Value = "工事用物損害に同じ"
+        wsTemplate.Range("F69").Value = "工事用物損害に同じ"
+        wsTemplate.Range("F70").Value = "損害保険金の20%　500万円限度"
+        wsTemplate.Range("F71").Value = "工事用物損害に同じ"
+        wsTemplate.Range("F72").Value = "損害保険金の10%限度"
+        wsTemplate.Range("F73").Value = "基本補償に含む"
+        wsTemplate.Range("F74").Value = "工事用物損害に同じ"
+        wsTemplate.Range("F77").Value = "対象工事の請負金額または500万円のいずれか低い額（免責50万円）"
+        wsTemplate.Range("F78").Value = "対象工事の請負金額または500万円のいずれか低い額（免責50万円）"
+        
+        'H67,H69,H74はデフォで×,H76は事業用動産で
+        wsTemplate.Range("H66").Value = "〇1事故：対象工事の請負金額または3億円のいずれか低い金額・保険期間中：証券記載の特約保険金額または3億円のいずれか高い金額（免責5 or 10万円）"
+        wsTemplate.Range("H68").Value = "100万円あるいは請負金額の低い方(免責5万円)"
+        wsTemplate.Range("H70").Value = "損害保険金の20％・1事故100万円程度"
+        wsTemplate.Range("H71").Value = "受託物損壊補償の限度額と同じ"
+        wsTemplate.Range("H72").Value = "損害保険金の6％"
+        wsTemplate.Range("H73").Value = "1事故30万円"
+        wsTemplate.Range("H75").Value = "工事用物損害に同じ"
+        wsTemplate.Range("H77").Value = "工事用物損害補償特約に同じ（免責　損害額の20% or 50万円のいずれか高い金額）"
+        wsTemplate.Range("H78").Value = "期間中500万円（免責　工事用物損に同じ）"
+    
+    Else
+        wsTemplate.Range("F66").Value = "付帯無し"
+        wsTemplate.Range("F67").Value = "付帯無し"
+        wsTemplate.Range("F68").Value = "付帯無し"
+        wsTemplate.Range("F69").Value = "付帯無し"
+        wsTemplate.Range("F70").Value = "付帯無し"
+        wsTemplate.Range("F71").Value = "付帯無し"
+        wsTemplate.Range("F72").Value = "付帯無し"
+        wsTemplate.Range("F73").Value = "付帯無し"
+        wsTemplate.Range("F74").Value = "付帯無し"
+        wsTemplate.Range("F77").Value = "付帯無し"
+        wsTemplate.Range("F78").Value = "付帯無し"
+        
+        wsTemplate.Range("H66").Value = "- (セット可能)"
+        wsTemplate.Range("H68").Value = "- (セット可能)"
+        wsTemplate.Range("H70").Value = "- (セット可能)"
+        wsTemplate.Range("H71").Value = "- (セット可能)"
+        wsTemplate.Range("H72").Value = "- (セット可能)"
+        wsTemplate.Range("H73").Value = "- (セット可能)"
+        wsTemplate.Range("H75").Value = "- (セット可能)"
+        wsTemplate.Range("H77").Value = "- (セット可能)"
+        wsTemplate.Range("H78").Value = "- (セット可能)"
+   End If
+   
+   
+   'MSの場合の類似プラン判定
+Dim dict_ms As Object
+Dim rng_Similar As Range
+Dim rng_Same As Range
+
+Set dict_ms = CreateObject("Scripting.Dictionary")
+dict_ms.Add "付帯無し", "- (セット可能)"
+dict_ms.Add "1,000万円(免責10万円)", "1,000万円 免責支払限度額の1%"
+dict_ms.Add "2,000万円(免責10万円)", "2,000万円 免責支払限度額の1%"
+dict_ms.Add "3,000万円(免責10万円)", "3,000万円 免責支払限度額の1%"
+dict_ms.Add "500万円(免責なし)", "5,000万円"
+dict_ms.Add "1,000万円(免責なし)", "5,000万円"
+dict_ms.Add "3,000万円(免責なし)", "5,000万円"
+dict_ms.Add "5,000万円(免責なし)", "5,000万円"
+dict_ms.Add "1億円(免責なし)", "1億円"
+dict_ms.Add "2億円(免責なし)", "1億円"
+dict_ms.Add "3億円(免責なし)", "1億円"
+dict_ms.Add "5億円(免責なし)", "1億円"
+dict_ms.Add "a:賠償:100万,費用:100万,利益:-", "1事故・期間中 3,000万円(免責10万円)"
+dict_ms.Add "b:賠償:3000万,費用:1000万,利益:-", "1事故・期間中 3,000万円(免責10万円)"
+dict_ms.Add "c:賠償:3000万,費用:1000万,利益:300万", "1事故・期間中 3,000万円(免責10万円)"
+dict_ms.Add "d:賠償:5000万,費用:2000万,利益:-", "1事故・期間中 5,000万円(免責10万円)"
+dict_ms.Add "e:賠償:5000万,費用:2000万,利益:500万", "1事故・期間中 5,000万円(免責10万円)"
+dict_ms.Add "f:賠償:1億,費用:3000万,利益:-", "1事故・期間中 5,000万円(免責10万円)"
+dict_ms.Add "g:賠償:1億,費用:3000万,利益:1000万", "1事故・期間中 5,000万円(免責10万円)"
+dict_ms.Add "h:賠償:3億,費用:5000万,利益:-", "1事故・期間中 5,000万円(免責10万円)"
+dict_ms.Add "i:賠償:3億,費用:5000万,利益:3000万", "1事故・期間中 5,000万円(免責10万円)"
+
+dict_ms.Add "500万円（風雹雪災　免責1万円/電気的機械的事故、不足突発　免責3万円）", "1事故・期間中 1,000万円（免責工事用物損害補償特約に同じ）"
+dict_ms.Add "1,000万円（風雹雪災　免責1万円/電気的機械的事故、不足突発　免責3万円）", "1事故・期間中 3,000万円（免責工事用物損害補償特約に同じ）"
+dict_ms.Add "3,000万円（風雹雪災　免責1万円/電気的機械的事故、不足突発　免責3万円）", "1事故・期間中 3,000万円（免責工事用物損害補償特約に同じ）"
+dict_ms.Add "4,000万円（風雹雪災　免責1万円/電気的機械的事故、不足突発　免責3万円）", "1事故・期間中 3,000万円（免責工事用物損害補償特約に同じ）"
+dict_ms.Add "5,000万円（風雹雪災　免責1万円/電気的機械的事故、不足突発　免責3万円）", "1事故・期間中 3,000万円（免責工事用物損害補償特約に同じ）"
+      
+Set rng_Similar = Union(wsTemplate.Range("F40"), wsTemplate.Range("F45"), wsTemplate.Range("F47"), wsTemplate.Range("F76"))
+For Each cell In rng_Similar
+    If dict_ms.exists(cell.Value) Then
+        '辞書に対応したプランを入れる
+        cell.Offset(0, 2).Value = dict_ms(cell.Value)
+    End If
+Next cell
+
+
+'H23借用不動産
+'期間中は基本補償の支払限度額になるので、借家賠の上限1億までは補償可能
+If Toggle_rent_ms.Value = True Then
+    Select Case Combo_Limit.Value
+        Case "5,000万円"
+            wsTemplate.Range("H23").Value = "1事故・期間中 5,000万円"
+        Case Else
+            wsTemplate.Range("H23").Value = "1事故・期間中 1億円"
+        End Select
+Else
+            wsTemplate.Range("H23").Value = "- (セット可能)"
+End If
+
+Set rng_Same = Nothing '解放して再利用
+  
+'H28地盤
+'20250613_他社補償に免責（変動有）を記載するため、付帯無しを1つ目に、他はELSEで処理
+Set rng_Same = wsTemplate.Range("F28")
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+        Case Else
+            cell.Offset(0, 2).Value = "1事故・期間中 1,000万円(免責5万円)"
+        
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+   
+'リコール費用補償or拡張費用補償 H34
+Set rng_Same = wsTemplate.Range("F34")
+ For Each cell In rng_Same
+    Select Case cell.Value
+        Case "1,000万円", "2,000万円", "3,000万円"
+            cell.Offset(0, 2).Value = cell.Value
+            
+        Case "5,000万円", "1億円"
+            cell.Offset(0, 2).Value = "3,000万円"
+            
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+ Next cell
+Set rng_Same = Nothing '解放して再利用
+   
+
+
+Set rng_Same = Union(wsTemplate.Range("F41"), wsTemplate.Range("F44"), wsTemplate.Range("F66"), wsTemplate.Range("F68"), wsTemplate.Range("F70"), wsTemplate.Range("F71"), wsTemplate.Range("F72"), wsTemplate.Range("F73"), wsTemplate.Range("F77"), wsTemplate.Range("F78"))
+ For Each cell In rng_Same
+    Select Case cell.Value
+     'サイバー攻撃対応費用フォレンジック H41
+        Case "特約内「費用」の支払限度額 ※縮小支払90％"
+            cell.Offset(0, 2).Value = "1事故・期間中1,000万円"
+     '食中毒・特定感染症損害補償特約 H44
+        Case "1事故5000万円・期間中 基本補償の支払限度額、食中毒は1事故・期間中1000万円"
+            cell.Offset(0, 2).Value = "契約時の設定金額"
+     
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+            
+    End Select
+ Next cell
+Set rng_Same = Nothing '解放して再利用
+    
+    
+
+ElseIf Company = "TN" Then
+    Call Export_Mapping(Company)
+    Call Export_Plan(Company, selectedPlans)
+    Call Format_Cell_Value(wsTemplate)
+    '工事用物損害だけ特殊なので直接指定する、、、あんまり特殊じゃなかった、、やっぱりちょっとだけ変則的でした,類似プランもここで。
+    If Toggle_const_tn.Value = True Then
+        wsTemplate.Range("F66").Value = "対象工事ごとの請負金額" & Combo_const_tn.Value
+        wsTemplate.Range("F67").Value = "対象工事ごとの請負金額もしくは1億円のいずれか低い額" & Combo_const_tn.Value
+        wsTemplate.Range("F72").Value = "工事に関する補償に同じ"
+        wsTemplate.Range("F73").Value = "工事に関する補償に同じ"
+        'wsTemplate.Range("F77").Value = "工事に関する補償に同じ" F77は違った
+        
+        wsTemplate.Range("H66").Value = "△1事故：対象工事の請負金額または3億円のいずれか低い金額・保険期間中：証券記載の特約保険金額または3億円のいずれか高い金額（免責5 or 10万円）"
+        wsTemplate.Range("H72").Value = "損害保険金の6％"
+        wsTemplate.Range("H73").Value = "1事故30万円"
+        'wsTemplate.Range("H77").Value = "工事用物損害補償特約に同じ（免責　損害額の20% or 50万円のいずれか高い金額）"
+   
+    Else
+        wsTemplate.Range("F66").Value = "付帯無し"
+        wsTemplate.Range("F67").Value = "付帯無し"
+        wsTemplate.Range("F72").Value = "付帯無し"
+        wsTemplate.Range("F73").Value = "付帯無し"
+        'wsTemplate.Range("F77").Value = "付帯無し"
+        
+        wsTemplate.Range("H66").Value = "- (セット可能)"
+        wsTemplate.Range("H72").Value = "- (セット可能)"
+        wsTemplate.Range("H73").Value = "- (セット可能)"
+        'wsTemplate.Range("H77").Value = "-"
+        
+        
+   End If
+   
+   If Combo_property_tn.Value = "100万円" Then
+    If Toggle_lease_tn.Value = True Then
+        wsTemplate.Range("F18").Value = "1事故・期間中 100万円"
+    Else
+        wsTemplate.Range("F18").Value = "付帯無し"
+    End If
+    If Toggle_leaseOp_tn.Value = True Then
+        wsTemplate.Range("F19").Value = "1事故・期間中 100万円"
+    Else
+        wsTemplate.Range("F19").Value = "付帯無し"
+    End If
+    
+   ElseIf Combo_property_tn.Value = "500万円" Then
+    If Toggle_lease_tn.Value = True Then
+        wsTemplate.Range("F18").Value = "1事故・期間中 500万円"
+    Else
+        wsTemplate.Range("F18").Value = "付帯無し"
+    End If
+    If Toggle_leaseOp_tn.Value = True Then
+        wsTemplate.Range("F19").Value = "1事故・期間中 500万円"
+        Else
+        wsTemplate.Range("F19").Value = "付帯無し"
+    End If
+   Else
+    If Toggle_lease_tn.Value = True Then
+        wsTemplate.Range("F18").Value = "1事故・期間中 1,000万円"
+        Else
+        wsTemplate.Range("F18").Value = "付帯無し"
+    End If
+    If Toggle_leaseOp_tn.Value = True Then
+        wsTemplate.Range("F19").Value = "1事故・期間中1,000万円"
+        Else
+        wsTemplate.Range("F19").Value = "付帯無し"
+    End If
+   End If
+        
+   'tnの場合の類似プラン判定
+
+    
+'類似プランの値が元と同じになる場合
+
+'16:支給財物、18:リースレンタル財物損壊、19:リースレンタル財物盗詐
+Set rng_Same = Union(wsTemplate.Range("F16"), wsTemplate.Range("F18"), wsTemplate.Range("F19"))
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "1事故・期間中 100万円", "1事故・期間中 500万円", "1事故・期間中 1,000万円"
+            cell.Offset(0, 2).Value = cell.Value
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "1事故・期間中 100万円"
+        
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+'17:来訪者受託、20:無償借用財物、21:管理自動車だったが、管理自動車はplanで全部×にしたので削除
+Set rng_Same = Union(wsTemplate.Range("F17"), wsTemplate.Range("F20"))
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "1事故・期間中 100万円", "1事故・期間中 500万円", "1事故・期間中 1,000万円", "1事故・期間中 2,000万円", "1事故・期間中 3,000万円"
+            cell.Offset(0, 2).Value = cell.Value
+            
+        Case "1事故・期間中 4,000万円", "1事故・期間中 5,000万円", "1事故・期間中 6,000万円", "1事故・期間中 7,000万円", "1事故・期間中 8,000万円", "1事故・期間中9,000万円", "1事故・期間中1億円", "1事故・期間中2億円", "1事故・期間中3億円", "1事故・期間中4億円", "1事故・期間中5億円", "1事故・期間中6億円", "1事故・期間中7億円", "1事故・期間中8億円", "1事故・期間中9億円", "1事故・期間中10億円"
+            cell.Offset(0, 2).Value = "1事故・期間中 3,000万円"
+            
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "1事故・期間中 100万円"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+
+Set rng_Same = wsTemplate.Range("F23") '受託不動産（借家人賠償）
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "1事故・期間中500万円", "1事故・期間中1,000万円"
+            cell.Offset(0, 2).Value = "1事故・期間中1,000万円"
+            
+        Case "1事故・期間中1,500万円", "1事故・期間中2,000万円"
+            cell.Offset(0, 2).Value = "1事故・期間中2,000万円"
+            
+        Case "1事故・期間中3,000万円", "1事故・期間中4,000万円", "1事故・期間中5,000万円", "1事故・期間中6,000万円", "1事故・期間中7,000万円", "1事故・期間中8,000万円", "1事故・期間中9,000万円", "1事故・期間中1億円"
+            cell.Offset(0, 2).Value = "1事故・期間中" & cell.Value
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+
+Set rng_Same = wsTemplate.Range("F24")  '借用イベント（受託物）
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "1事故・期間中500万円"
+            cell.Offset(0, 2).Value = "1事故・期間中500万円"
+    
+        Case "1事故・期間中1,000万円"
+            cell.Offset(0, 2).Value = "1事故・期間中1,000万円"
+            
+        Case "1事故・期間中1,500万円", "1事故・期間中2,000万円"
+            cell.Offset(0, 2).Value = "1事故・期間中2,000万円"
+            
+        Case "1事故・期間中3,000万円", "1事故・期間中4,000万円", "1事故・期間中5,000万円", "1事故・期間中6,000万円", "1事故・期間中7,000万円", "1事故・期間中8,000万円", "1事故・期間中9,000万円", "1事故・期間中1億円"
+            cell.Offset(0, 2).Value = "1事故・期間中3,000万円"
+            
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "1事故・期間中100万円"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+
+ '地盤崩壊危険補償 H28
+Set rng_Same = wsTemplate.Range("F28")
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "1事故・期間中1,000万円 免責無し"
+            cell.Offset(0, 2).Value = "1事故・期間中1,000万円(免責5万円)"
+                        
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+        Case "×"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+'リコール費用補償or拡張費用補償 H34
+Set rng_Same = wsTemplate.Range("F34") 'リコール
+
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "1事故・期間中 500万円"
+            cell.Offset(0, 2).Value = "1事故・期間中 500万円"
+            
+        Case "1事故・期間中 1,000万円"
+            cell.Offset(0, 2).Value = "1事故・期間中 1,000万円"
+            
+        Case "1事故・期間中 2,000万円"
+            cell.Offset(0, 2).Value = "1事故・期間中 2,000万円"
+            
+        Case "1事故・期間中 3,000万円", "1事故・期間中 5,000万円", "1事故・期間中1億円"
+            cell.Offset(0, 2).Value = "1事故・期間中 3,000万円"
+            
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+            
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+ '生産物自体の損害 H35
+Set rng_Same = wsTemplate.Range("F35")
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "1事故・期間中 1,000万円"
+            cell.Offset(0, 2).Value = "1事故・期間中 1,000万円"
+                        
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+'個人情報漏洩補償 H40
+Set rng_Same = wsTemplate.Range("F40") '個人情報漏洩
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "50万円", "1,000万円"
+            cell.Offset(0, 2).Value = "1事故・期間中 1,000万円(免責10万円)"
+    
+        Case "3,000万円"
+            cell.Offset(0, 2).Value = "1事故・期間中 3,000万円(免責10万円)"
+            
+        Case "5,000万円", "1億円", "3億円"
+            cell.Offset(0, 2).Value = "1事故・期間中 5,000万円(免責10万円)"
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+'サイバー攻撃対応費用フォレンジック H41
+Set rng_Same = wsTemplate.Range("F41")
+  'フォレンジックの入力もここで行う
+If Check_cyber_tn.Value = True Then
+    rng_Same.Value = "1事故・期間中" & cyber_expence_value.Caption
+  For Each cell In rng_Same
+    Select Case cell.Value
+        Case "1事故・期間中 50万円", "1事故・期間中 200万円", "1事故・期間中 1,000万円", "1事故・期間中 2,000万円", "1事故・期間中 3,000万円"
+            cell.Offset(0, 2).Value = "1事故・期間中 1,000万円"
+
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+  Next cell
+Else
+   wsTemplate.Range("F41").Value = "付帯無し"
+   wsTemplate.Range("H41").Value = "- (セット可能)"
+End If
+Set rng_Same = Nothing '解放して再利用
+
+'人格権,AS側は基本補償に含まれているが、TN側で付帯していない場合はセット可とする（除外特約を使ってはずす状況を想定）
+
+Set rng_Same = wsTemplate.Range("F42") '人格権
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    
+        Case Else
+            cell.Offset(0, 2).Value = "〇"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+
+
+
+
+'食中毒・特定感染症損害補償特約 H44
+Set rng_Same = wsTemplate.Range("F44")
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "1事故10億円、営業継続費用保険金300万円", "1事故10億円、営業継続費用保険金500万円", "1事故10億円、営業継続費用保険金1,000万円", "1事故10億円、営業継続費用保険金3,000万円", "1事故10億円、営業継続費用保険金5,000万円"
+            cell.Offset(0, 2).Value = "契約時の設定金額"
+
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+'製造業E＆O H45
+Set rng_Same = wsTemplate.Range("F45")
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "1事故・期間中1,000万円 免責10万円"
+            cell.Offset(0, 2).Value = "1事故・保険期間中1,000万円(免責支払限度の1%)"
+
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+'使用者賠償 H47
+Set rng_Same = wsTemplate.Range("F47")
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "1名500万円~1,000万円、1災害1,000万円、事故対応費用500万円(身体障害見舞費用10万円)", "1名2,000万円、1災害2,000万円、事故対応費用500万円(身体障害見舞費用10万円)", "1名3,000万円、1災害3,000万円、事故対応費用500万円(身体障害見舞費用10万円)", "1名4,000万円、1災害4,000万円~1億円、事故対応費用500万円(身体障害見舞費用10万円)", "1名5,000万円、1災害5,000万円、事故対応費用500万円(身体障害見舞費用10万円)"
+            cell.Offset(0, 2).Value = "5,000万円"
+    
+        Case "1名6,000万円、1災害6,000万円、事故対応費用500万円(身体障害見舞費用10万円)", "1名7,000万円、1災害7,000万円、事故対応費用500万円(身体障害見舞費用10万円)", "1名8,000万円、1災害8,000万円、事故対応費用500万円(身体障害見舞費用10万円)", "1名9,000万円、1災害9,000万円、事故対応費用500万円(身体障害見舞費用10万円)", "1名1億円、1災害1億円、事故対応費用500万円(身体障害見舞費用10万円)", "1名2億円、1災害2億円、事故対応費用500万円(身体障害見舞費用10万円)", "1名3億円、1災害3億円、事故対応費用500万円(身体障害見舞費用10万円)", "1名4億円、1災害4億円、事故対応費用500万円(身体障害見舞費用10万円)", "1名5億円、1災害5億円、事故対応費用500万円(身体障害見舞費用10万円)"
+            cell.Offset(0, 2).Value = "1億円"
+            
+        Case "1,500万円", "2,000万円"
+            cell.Offset(0, 2).Value = "2,000万円"
+            
+        Case "3,000万円", "4,000万円", "5,000万円", "6,000万円", "7,000万円", "8,000万円", "9,000万円", "1億円"
+            cell.Offset(0, 2).Value = "3,000万円"
+        
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+'ブランドイメージ回復費用 H59
+
+Set rng_Same = wsTemplate.Range("F59")
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "1事故・期間中1,000万円(訴訟対応費用、初期対応費用、信頼回復広告費用合算)、身体障害見舞費用は1名10万円"
+            cell.Offset(0, 2).Value = "1事故・期間中1,000万円(免責無し)"
+
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+'輸送中・荷下ろし中 H68
+
+Set rng_Same = wsTemplate.Range("F68")
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "100万円または保険価額のいずれか低い額(免責5万円)"
+            cell.Offset(0, 2).Value = "100万円あるいは請負金額の低い方 免責5万円 "
+
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+'臨時費用 H70
+
+Set rng_Same = wsTemplate.Range("F70")
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "1事故損害保険金の20％もしくは100万円のいずれか低い額"
+            cell.Offset(0, 2).Value = "損害保険金の20％・1事故100万円程度"
+
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+
+Set rng_Same = wsTemplate.Range("F71") '支給材料補償
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "50万円 期間中無制限", "100万円 期間中無制限"
+            cell.Offset(0, 2).Value = "100万円"
+    
+        Case "500万円 期間中無制限"
+            cell.Offset(0, 2).Value = "500万円"
+            
+        Case "1,000万円 期間中無制限"
+            cell.Offset(0, 2).Value = "1,000万円"
+            
+    End Select
+            
+Next cell
+
+'工事現場以外自社常設施設 H76
+
+Set rng_Same = wsTemplate.Range("F76")
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "1事故10億円"
+            cell.Offset(0, 2).Value = "1事故・期間中3,000万円（免責工事用物損害補償特約に同じ）"
+
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+'メインテナンス期間に関する特約 H77
+
+Set rng_Same = wsTemplate.Range("F77")
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "工事に関する補償に同じ"
+            cell.Offset(0, 2).Value = "工事用物損害補償特約に同じ（免責　損害額の20% or 50万円のいずれか高い金額）"
+
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+    
+'工事用仮設備・機械器具事故 H78
+
+Set rng_Same = wsTemplate.Range("F78")
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "1事故・期間中500万円"
+            cell.Offset(0, 2).Value = "期間中500万円（免責　工事用物損に同じ）"
+
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+    
+    
+ElseIf Company = "SJ" Then
+    Call Export_Mapping(Company)
+    Call Export_Plan(Company, selectedPlans)
+    Call Format_Cell_Value(wsTemplate)
+    '工事用物損害だけ特殊なので直接指定する、、、あんまり特殊じゃなかった、、やっぱりちょっとだけ変則的でしたワイドとエコノミーで記述が違う,類似プランもここで。
+    If Toggle_const_sj.Value = True Then
+         If ListBox1.Value = "エコノミー" Then
+            wsTemplate.Range("F66").Value = "請負金額の積算単価または積算数量によって算出した額を基礎として算定した金額で、1事故1億円または保険金額のいずれか低い額限度" & Combo_const_sj.Value
+            wsTemplate.Range("F67").Value = "請負金額の積算単価または積算数量によって算出した額を基礎として算定した金額で、1事故1億円または保険金額のいずれか低い額限度" & Combo_const_sj.Value
+            wsTemplate.Range("F68").Value = "工事物ユニットに同じ"
+            wsTemplate.Range("F70").Value = "×"
+            wsTemplate.Range("F71").Value = "工事物ユニットに同じ"
+            wsTemplate.Range("F72").Value = "損害保険金の10％限度"
+            wsTemplate.Range("F76").Value = "物損害ユニットの支払限度額もしくは再調達価額のうち、いずれか低いもの" & Combo_movable_sj.Value
+            'wsTemplate.Range("F77").Value = "工事物ユニットに同じ（免責　損害額の20%または50万円のいずれか高い額）"
+            wsTemplate.Range("F78").Value = "×"
+            
+         Else
+            wsTemplate.Range("F66").Value = "請負金額の積算単価または積算数量によって算出した額を基礎として算定した金額で、1事故1億円または保険金額のいずれか低い額限度" & Combo_const_sj.Value
+            wsTemplate.Range("F67").Value = "請負金額の積算単価または積算数量によって算出した額を基礎として算定した金額で、1事故1億円または保険金額のいずれか低い額限度" & Combo_const_sj.Value
+            wsTemplate.Range("F68").Value = "工事物ユニットに同じ"
+            wsTemplate.Range("F70").Value = "△損害保険金の20%　500万円限度"
+            wsTemplate.Range("F71").Value = "工事物ユニットに同じ"
+            wsTemplate.Range("F72").Value = "損害保険金の10％限度"
+            wsTemplate.Range("F73").Value = "1事故復旧費の20％または100万円のいずれか低い額"
+            wsTemplate.Range("F76").Value = "物損害ユニットの支払限度額もしくは再調達価額のうち、いずれか低いもの" & Combo_movable_sj.Value
+            'wsTemplate.Range("F77").Value = "工事物ユニットに同じ（免責　損害額の20%または50万円のいずれか高い額）"
+            'wsTemplate.Range("F78").Value = "期間中500万円※工事物ユニットの保険金をお支払おしない場合は対象外"
+          End If
+          
+          wsTemplate.Range("H66").Value = "△1事故：対象工事の請負金額または3億円のいずれか低い金額・保険期間中：証券記載の特約保険金額または3億円のいずれか高い金額（免責5 or 10万円）"
+          wsTemplate.Range("H70").Value = "損害保険金の20％・1事故100万円程度"
+          wsTemplate.Range("H71").Value = "受託物損壊補償の限度額と同じ"
+          wsTemplate.Range("H72").Value = "損害保険金の6％"
+          wsTemplate.Range("H73").Value = "1事故30万円"
+          wsTemplate.Range("H76").Value = "1事故・期間中1,000万円（免責工事用物損害補償特約に同じ）"
+          
+    Else
+        wsTemplate.Range("F66").Value = "付帯無し"
+        wsTemplate.Range("F67").Value = "付帯無し"
+        wsTemplate.Range("F68").Value = "付帯無し"
+        wsTemplate.Range("F70").Value = "付帯無し"
+        wsTemplate.Range("F71").Value = "付帯無し"
+        wsTemplate.Range("F72").Value = "付帯無し"
+        wsTemplate.Range("F73").Value = "付帯無し"
+        wsTemplate.Range("F76").Value = "付帯無し"
+        'wsTemplate.Range("F75").Value = "付帯無し"
+        'wsTemplate.Range("F76").Value = "付帯無し"
+        
+        wsTemplate.Range("H66").Value = "- (セット可能)"
+        wsTemplate.Range("H70").Value = "- (セット可能)"
+        wsTemplate.Range("H71").Value = "- (セット可能)"
+        wsTemplate.Range("H72").Value = "- (セット可能)"
+        wsTemplate.Range("H73").Value = "- (セット可能)"
+        wsTemplate.Range("H76").Value = "- (セット可能)"
+        
+   End If
+   
+   '休業ユニットと食中毒の補償が被るのでここで指定
+   If Toggle_poison_sj = True And Toggle_bi_sj = False Then
+      wsTemplate.Range("F44").Value = "1事故・保険期間中　500万円"
+      wsTemplate.Range("E44").Value = "△食中毒・感染症利益補償特約"
+   ElseIf Toggle_bi_sj = True Then
+      wsTemplate.Range("F44").Value = "1事故・保険期間中　600万円"
+      wsTemplate.Range("E44").Value = "△休業ユニット"
+   Else
+      wsTemplate.Range("F44").Value = "付帯無し"
+      wsTemplate.Range("E44").Value = "△食中毒・感染症利益補償特約または△休業ユニット"
+   End If
+   
+   '受託物もここで指定
+   wsTemplate.Range("F17").Value = Combo_basicBailee_sj.Value
+   wsTemplate.Range("F18").Value = Combo_basicBailee_sj.Value & "※リース・レンタル契約のみ"
+   wsTemplate.Range("F19").Value = Combo_basicBailee_sj.Value & "※リース・レンタル契約のみ"
+   wsTemplate.Range("F21").Value = Combo_basicBailee_sj.Value
+  
+  '財物損壊のない使用不能もここで指定_基本補償の保険金額を引用する必要があるため,ワイドのみ
+  If ListBox1.Value = "ワイド" Then
+   wsTemplate.Range("F10").Value = "1事故・期間中" & Combo_Limit.Value
+   wsTemplate.Range("F29").Value = "1事故・期間中" & Combo_Limit.Value
+   wsTemplate.Range("F38").Value = "1事故・期間中" & Combo_Limit.Value
+  End If
+  
+   'SJの場合の類似プラン判定
+Dim dict_sj As Object
+Dim rng_Similar_sj As Range
+Dim rng_Same_sj As Range
+
+Set dict_sj = CreateObject("Scripting.Dictionary")
+dict_sj.Add "付帯無し", "- (セット可能)"
+dict_sj.Add "100万円※リース・レンタル契約のみ", "1事故・期間中100万円"
+dict_sj.Add "500万円※リース・レンタル契約のみ", "1事故・期間中500万円"
+dict_sj.Add "1,000万円※リース・レンタル契約のみ", "1事故・期間中1,000万円"
+dict_sj.Add "1,000万円(免責なし)", "5,000万円"
+dict_sj.Add "2,000万円(免責なし)", "5,000万円"
+dict_sj.Add "3,000万円(免責なし)", "5,000万円"
+dict_sj.Add "4,000万円(免責なし)", "5,000万円"
+dict_sj.Add "5,000万円(免責なし)", "5,000万円"
+dict_sj.Add "1億円(免責なし)", "1億円"
+dict_sj.Add "2億円(免責なし)", "1億円"
+dict_sj.Add "3億円(免責なし)", "1億円"
+dict_sj.Add "4億円(免責なし)", "1億円"
+dict_sj.Add "5億円(免責なし)", "1億円"
+dict_sj.Add "100万円", "1事故・期間中1,000万円(免責10万円)"
+dict_sj.Add "1,000万円", "1事故・期間中1,000万円(免責10万円)"
+dict_sj.Add "5,000万円", "1事故・期間中5,000万円(免責10万円)"
+dict_sj.Add "1億円", "1事故・期間中5,000万円(免責10万円)"
+dict_sj.Add "5億円", "1事故・期間中5,000万円(免責10万円)"
+
+dict_sj.Add "請負金額の積算単価または積算数量によって算出した額を基礎として算定した金額で、1事故1億円または保険金額のいずれか低い額限度（免責1万円）", "100万円あるいは請負金額の低い方 免責5万円"
+dict_sj.Add "請負金額の積算単価または積算数量によって算出した額を基礎として算定した金額で、1事故1億円または保険金額のいずれか低い額限度（免責5万円）", "100万円あるいは請負金額の低い方 免責5万円"
+dict_sj.Add "請負金額の積算単価または積算数量によって算出した額を基礎として算定した金額で、1事故1億円または保険金額のいずれか低い額限度（免責10万円）", "100万円あるいは請負金額の低い方 免責10万円"
+
+      
+Set rng_Similar_sj = Union(wsTemplate.Range("F18"), wsTemplate.Range("F19"), wsTemplate.Range("F40"), wsTemplate.Range("F47"), wsTemplate.Range("F68"))
+For Each cell In rng_Similar_sj
+    If dict_sj.exists(cell.Value) Then
+        '辞書に対応したプランを入れる
+        Debug.Print cell.Address
+        Debug.Print cell.Offset(0, 2).Address
+        Debug.Print cell.Offset(0, 2).Value
+        Debug.Print dict_sj(cell.Value)
+        cell.Offset(0, 2).Value = dict_sj(cell.Value)
+        Debug.Print cell.Offset(0, 2).Value
+    End If
+Next cell
+   
+'類似プランの値が元と同じになる場合
+
+Set rng_Same_sj = Union(wsTemplate.Range("F16"), wsTemplate.Range("F17"))
+For Each cell In rng_Same_sj
+    Select Case cell.Value
+        Case "100万円", "500万円", "1,000万円"
+            cell.Offset(0, 2).Value = "1事故・期間中" & cell.Value
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "1事故・期間中100万円"
+    End Select
+            
+Next cell
+
+'地盤崩壊危険補償 H28
+
+Set rng_Same = wsTemplate.Range("F28")
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "1事故・期間中1000万円"
+            cell.Offset(0, 2).Value = "1,000万円"
+
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+'リコール限定費用補償 H33
+
+Set rng_Same = wsTemplate.Range("F33")
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "3,000万円（縮小支払90％）", "1億円（縮小支払90％）"
+            cell.Offset(0, 2).Value = "3,000万円"
+
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+'リコール拡張 H34
+
+Set rng_Same = wsTemplate.Range("F34")
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "3,000万円（縮小支払90％）", "1億円（縮小支払90％）"
+            cell.Offset(0, 2).Value = "3,000万円"
+
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "1事故・期間中500万円(免責5万円)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+'食中毒・特定感染症損害補償特約 H44
+
+Set rng_Same = wsTemplate.Range("F44")
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "1事故・保険期間中　500万円", "1事故・保険期間中　600万円"
+            cell.Offset(0, 2).Value = "契約時の設定金額"
+
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+
+'製造業E＆O H45
+
+Set rng_Same = wsTemplate.Range("F45")
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "期間中1,000万円（免責10万円）"
+            cell.Offset(0, 2).Value = "1事故・保険期間中1,000万円(免責支払限度の1%)"
+
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+
+'不誠実行為危険補償 H51
+
+Set rng_Same = wsTemplate.Range("F51")
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "期間中100万円（免責10万円）"
+            cell.Offset(0, 2).Value = "1事故・期間中1,000万円(免責10万円)"
+
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+'メインテナンス期間に関する特約 H77
+
+Set rng_Same = wsTemplate.Range("F77")
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "工事物ユニットに同じ（免責　損害額の20%または50万円のいずれか高い額）"
+            cell.Offset(0, 2).Value = "工事用物損害補償特約に同じ（免責　損害額の20% or 50万円のいずれか高い金額）"
+
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+'メインテナンス期間に関する特約 H78
+
+Set rng_Same = wsTemplate.Range("F78")
+For Each cell In rng_Same
+    Select Case cell.Value
+        Case "期間中500万円※工事物ユニットの保険金をお支払おしない場合は対象外"
+            cell.Offset(0, 2).Value = "期間中500万円（免責　工事用物損に同じ）"
+        Case "×"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+        Case "付帯無し"
+            cell.Offset(0, 2).Value = "- (セット可能)"
+    End Select
+            
+Next cell
+
+Set rng_Same = Nothing '解放して再利用
+
+
+Else: MsgBox "Error"
+End If
+
+'各社共通
+
+'作業対象物危険_支給資材 H15
+'1事故・期間中 + 基本保険金額 に変更。おすすめプランがonのときはおすすめのリミットを引用
+'mappingだと免責も引っ張ってくるのでここで対応
+
+wsTemplate.Range("H15").Value = "1事故・期間中" & Combo_Limit.Value
+If CheckBox_AS_Plan.Value = True Then
+wsTemplate.Range("I15").Value = "1事故・期間中" & Combo_Limit_AS.Value
+End If
+
+'財物の損壊を伴わない使用不能 H29,H38,H10
+'基本保険金額 に変更。おすすめプランがonのときはおすすめのリミットを引用
+'mappingだと免責も引っ張ってくるのでここで対応
+'20250613_メインリスクと表記揃えるためコメントアウト
+'wsTemplate.Range("H10").Value = "1事故・期間中" & Combo_Limit.Value
+'wsTemplate.Range("H29").Value = "1事故・期間中" & Combo_Limit.Value
+'wsTemplate.Range("H38").Value = "1事故・期間中" & Combo_Limit.Value
+'If CheckBox_AS_Plan.Value = True Then
+'wsTemplate.Range("I10").Value = "1事故・期間中" & Combo_Limit_AS.Value
+'wsTemplate.Range("I29").Value = "1事故・期間中" & Combo_Limit_AS.Value
+'wsTemplate.Range("I38").Value = "1事故・期間中" & Combo_Limit_AS.Value
+'End If
+
+
+
+'ASおすすめプランの工事用物損害部分
+If CheckBox_AS_Plan.Value = True Then
+    If Toggle_const_as.Value = True Then
+        wsTemplate.Range("I66").Value = "△1事故：対象工事の請負金額または3億円のいずれか低い金額・保険期間中：証券記載の特約保険金額または3億円のいずれか高い金額、免責" & Combo_const_as.Value
+        wsTemplate.Range("I68").Value = "100万円あるいは請負金額の低い方、免責" & Combo_const_as.Value
+        wsTemplate.Range("I70").Value = "損害保険金の20％・1事故100万円程度"
+        wsTemplate.Range("I72").Value = "損害保険金の6%"
+        wsTemplate.Range("I73").Value = "1事故30万円"
+    Else
+        wsTemplate.Range("I66").Value = "- (セット可能)"
+        wsTemplate.Range("I68").Value = "- (セット可能)"
+        wsTemplate.Range("I70").Value = "- (セット可能)"
+        wsTemplate.Range("I72").Value = "- (セット可能)"
+        wsTemplate.Range("I73").Value = "- (セット可能)"
+    End If
+End If
+
+'1事故・期間中が残ってしまった場合の対応
+For Each cell In wsTemplate.UsedRange
+'         cell.Value = Replace(cell.Value, "【個別】", "")
+'         cell.Value = Replace(cell.Value, "1事故・期間中付帯無し", "付帯無し")
+         cell.Value = Replace(cell.Value, "1事故・期間中- (セット可能)", "- (セット可能)")
+      
+Next cell
+
+'セルの色設定,該当なしはピンク、×はグレー,タイトル部分は青、デフォルトは白,セット可は灰色
+For Each cell In wsTemplate.UsedRange
+    If cell.Value = "該当なし" Then
+        cell.Interior.Color = RGB(255, 200, 200)
+        cell.Font.Color = RGB(156, 0, 6)
+    
+    ElseIf cell.Value = "×" Then
+        cell.Interior.Color = RGB(192, 192, 192)
+    ElseIf cell.Value = "- (セット可能)" Then
+        cell.Interior.Color = RGB(242, 242, 242)
+    Else
+        'それ以外は塗りつぶし無し
+        cell.Interior.ColorIndex = 0
+        cell.Font.Color = RGB(0, 0, 0)
+ 
+      
+    End If
+Next cell
+
+'入力された他社保険料を転記
+wsTemplate.Range("F4").Value = Premium.Value
+
+'おすすめプランのチェックがついていなければおすすめ欄の入力は全て消す
+If CheckBox_AS_Plan.Value = False Then
+    With wsTemplate.Range("I6:I78")
+        .ClearContents
+        .Interior.Color = RGB(255, 255, 255)
+    End With
+End If
+'タイトル系の色付け
+wsTemplate.Range(Cells(3, 5), Cells(3, 6)).Interior.Color = RGB(226, 239, 218)
+wsTemplate.Range(Cells(3, 5), Cells(3, 6)).Font.Color = RGB(0, 176, 80)
+
+wsTemplate.Range(Cells(3, 7), Cells(3, 9)).Interior.Color = RGB(0, 176, 240)
+wsTemplate.Range(Cells(3, 7), Cells(3, 9)).Font.Color = RGB(255, 255, 255)
+
+wsTemplate.Range(Cells(6, 3), Cells(6, 9)).Interior.Color = RGB(217, 225, 242)
+wsTemplate.Range(Cells(11, 3), Cells(11, 9)).Interior.Color = RGB(217, 225, 242)
+wsTemplate.Range(Cells(30, 3), Cells(30, 9)).Interior.Color = RGB(217, 225, 242)
+wsTemplate.Range(Cells(39, 3), Cells(39, 3)).Interior.Color = RGB(230, 213, 243)
+
+'非表示の設定
+'E列とG列を非表示に
+wsTemplate.Columns("E:E").EntireColumn.Hidden = True
+wsTemplate.Columns("G:G").EntireColumn.Hidden = True
+
+
+'建設業の場合のフォーマット処理
+If OptionButton_Const.Value = True Then
+wsTemplate.Rows("12").Hidden = True
+wsTemplate.Rows("13:15").Hidden = False
+wsTemplate.Rows("26:28").Hidden = False
+wsTemplate.Rows("31:34").Hidden = True
+wsTemplate.Rows("36:37").Hidden = True
+wsTemplate.Rows("44:45").Hidden = True
+wsTemplate.Rows("46").Hidden = False
+wsTemplate.Rows("50").Hidden = True
+wsTemplate.Rows("53").Hidden = False
+wsTemplate.Rows("66:78").Hidden = False
+
+'Non建設の場合は物損害など建設固有を非表示
+ElseIf OptionButton_NonConst.Value = True Then
+
+wsTemplate.Rows("12").Hidden = False
+wsTemplate.Rows("13:15").Hidden = True
+wsTemplate.Rows("26:28").Hidden = True
+wsTemplate.Rows("31:34").Hidden = False
+wsTemplate.Rows("36:37").Hidden = False
+wsTemplate.Rows("44:45").Hidden = False
+wsTemplate.Rows("46").Hidden = True
+wsTemplate.Rows("50").Hidden = False
+wsTemplate.Rows("53").Hidden = True
+wsTemplate.Rows("66:78").Hidden = True
+
+'兼業の場合は全部表示
+Else
+wsTemplate.Rows("12").Hidden = False
+wsTemplate.Rows("13:15").Hidden = False
+wsTemplate.Rows("26:28").Hidden = False
+wsTemplate.Rows("31:34").Hidden = False
+wsTemplate.Rows("36:37").Hidden = False
+wsTemplate.Rows("44:45").Hidden = False
+wsTemplate.Rows("46").Hidden = False
+wsTemplate.Rows("50").Hidden = False
+wsTemplate.Rows("53").Hidden = False
+wsTemplate.Rows("66:78").Hidden = False
+
+End If
+
+'被害者見舞費用のところはSJ以外は1段目だけ表示
+If Company <> "SJ" Then
+wsTemplate.Rows("56").Hidden = True
+Else
+wsTemplate.Rows("56").Hidden = False
+End If
+
+'受託財物_管理自動車のところはTN以外は非表示
+If Company <> "TN" Then
+wsTemplate.Rows("21:22").Hidden = True
+Else
+wsTemplate.Rows("21:22").Hidden = False
+End If
+
+'msg
+MsgBox "出力しました", vbInformation
+
+'ユーザーフォームを閉じる,やっぱり閉じない
+'Main.Hide
+
+'ターゲットシートに移動
+wsTemplate.Activate
+
+End Sub
+
+'転記用の関数、Mappingシートで指定されたセル位置に転記するよ
+
+Private Sub Export_Mapping(Company As String)
+
+Dim wsTemplate As Worksheet
+Dim wsMapping As Worksheet
+Dim ctrl1 As Object, ctrl2 As Object, ctrl3 As Object
+Dim toggleCtrl As MSForms.ToggleButton
+Dim lastRow As Long
+Dim i As Long
+Dim ctrl1Name As String, ctrl2Name As String, ctrl3Name As String
+Dim Cell1 As String, Cell2 As String, Cell3 As String, Cell4 As String, Cell5 As String, Cell6 As String, Cell7 As String, Cell8 As String
+Dim toggleName As String, toggleTrueValue As Variant, toggleFalseValue As Variant
+Dim valueToTransfer As Variant, combinedValue As String
+Dim transferType As String, toggleValue As Boolean
+Dim Prefix As String
+
+'Mappingシートをセットし、読み込む最終行を取得
+Set wsMapping = ThisWorkbook.Sheets("Mapping")
+lastRow = wsMapping.Cells(wsMapping.Rows.Count, "A").End(xlUp).Row
+
+'Mappingシートをループして転記
+For i = 2 To lastRow
+    ctrl1Name = wsMapping.Cells(i, 1).Value
+    companyName = wsMapping.Cells(i, 2).Value
+    Cell1 = wsMapping.Cells(i, 3).Value
+    Cell2 = wsMapping.Cells(i, 4).Value
+    Cell3 = wsMapping.Cells(i, 5).Value
+    Cell4 = wsMapping.Cells(i, 6).Value
+    Cell5 = wsMapping.Cells(i, 7).Value
+    Cell6 = wsMapping.Cells(i, 8).Value
+    Cell7 = wsMapping.Cells(i, 9).Value
+    Cell8 = wsMapping.Cells(i, 10).Value
+    Cell9 = wsMapping.Cells(i, 11).Value
+    Cell10 = wsMapping.Cells(i, 12).Value
+    Cell11 = wsMapping.Cells(i, 13).Value
+    Cell12 = wsMapping.Cells(i, 14).Value
+    ctrl2Name = wsMapping.Cells(i, 15).Value
+    ctrl3Name = wsMapping.Cells(i, 16).Value
+    toggleName = wsMapping.Cells(i, 17).Value
+    toggleTrueValue = wsMapping.Cells(i, 18).Value
+    toggleFalseValue = wsMapping.Cells(i, 19).Value
+    transferType = wsMapping.Cells(i, 20).Value
+    Prefix = wsMapping.Cells(i, 21).Value
+
+'コントロールの開放
+Set ctrl1 = Nothing
+Set ctrl2 = Nothing
+Set ctrl3 = Nothing
+Set toggleCtrl = Nothing
+
+
+'コントロールのチェック
+On Error Resume Next
+
+Set ctrl1 = Me.Controls(ctrl1Name)
+If ctrl2Name <> "" Then
+    Set ctrl2 = Me.Controls(ctrl2Name)
+End If
+If ctrl3Name <> "" Then
+    Set ctrl3 = Me.Controls(ctrl3Name)
+End If
+
+If toggleName <> "" Then
+    Set toggleCtrl = Me.Controls(toggleName)
+End If
+On Error GoTo 0
+
+'トグル判定
+If Not toggleCtrl Is Nothing Then
+    toggleValeu = toggleCtrl.Value
+    If toggleValeu = True Then
+    
+       valueToTransfer = IIf(toggleTrueValue <> "", toggleTrueValue, ctrl1.Value)
+    Else
+       valueToTransfer = toggleFalseValue
+    End If
+
+    
+Else
+    'トグルがないとき
+    valueToTransfer = ctrl1.Value
+End If
+
+    
+'出力先シートをセット
+
+Set wsTemplate = ThisWorkbook.Sheets("Template_ALL_test")
+
+'カンパニーで転記するか判断
+If companyName = Company Or companyName = "AS" Or companyName = "Common" Then
+
+'出力処理
+Select Case transferType
+    'Case "single"
+        '単一セルに転記
+    '    If Cell1 <> "" Then wsTemplate.Range(Cell1).Value = valueToTransfer
+        
+    Case "single"
+        '単一の値を転記
+        If Cell1 <> "" Then wsTemplate.Range(Cell1).Value = valueToTransfer
+        If Cell2 <> "" Then wsTemplate.Range(Cell2).Value = valueToTransfer
+        If Cell3 <> "" Then wsTemplate.Range(Cell3).Value = valueToTransfer
+        If Cell4 <> "" Then wsTemplate.Range(Cell4).Value = valueToTransfer
+        If Cell5 <> "" Then wsTemplate.Range(Cell5).Value = valueToTransfer
+        If Cell6 <> "" Then wsTemplate.Range(Cell6).Value = valueToTransfer
+        If Cell7 <> "" Then wsTemplate.Range(Cell7).Value = valueToTransfer
+        If Cell8 <> "" Then wsTemplate.Range(Cell8).Value = valueToTransfer
+        If Cell9 <> "" Then wsTemplate.Range(Cell9).Value = valueToTransfer
+        If Cell10 <> "" Then wsTemplate.Range(Cell10).Value = valueToTransfer
+        If Cell11 <> "" Then wsTemplate.Range(Cell11).Value = valueToTransfer
+        If Cell12 <> "" Then wsTemplate.Range(Cell12).Value = valueToTransfer
+    Case "combine"
+        '2つの値をくっつける場合、支払限度額と免責額のケース,Prefixもつける
+        If Not ctrl2 Is Nothing Then
+            If Not (ctrl1.Value = "" Or ctrl1.Value = "付帯無し") Then
+            combinedValue = ctrl1.Value & "(免責" & ctrl2.Value & ")"
+            Else: combinedValue = "付帯無し"
+            End If
+        If combinedValue <> "付帯無し" Then
+            If Cell1 <> "" Then wsTemplate.Range(Cell1).Value = Prefix & combinedValue
+            If Cell2 <> "" Then wsTemplate.Range(Cell2).Value = Prefix & combinedValue
+            If Cell3 <> "" Then wsTemplate.Range(Cell3).Value = Prefix & combinedValue
+            If Cell4 <> "" Then wsTemplate.Range(Cell4).Value = Prefix & combinedValue
+            If Cell5 <> "" Then wsTemplate.Range(Cell5).Value = Prefix & combinedValue
+            If Cell6 <> "" Then wsTemplate.Range(Cell6).Value = Prefix & combinedValue
+            If Cell7 <> "" Then wsTemplate.Range(Cell7).Value = Prefix & combinedValue
+            If Cell8 <> "" Then wsTemplate.Range(Cell8).Value = Prefix & combinedValue
+            If Cell9 <> "" Then wsTemplate.Range(Cell9).Value = Prefix & combinedValue
+            If Cell10 <> "" Then wsTemplate.Range(Cell10).Value = Prefix & combinedValue
+            If Cell11 <> "" Then wsTemplate.Range(Cell11).Value = Prefix & combinedValue
+            If Cell12 <> "" Then wsTemplate.Range(Cell12).Value = Prefix & combinedValue
+        '付帯無し のときは prefix使わない
+        Else
+            If Cell1 <> "" Then wsTemplate.Range(Cell1).Value = combinedValue
+            If Cell2 <> "" Then wsTemplate.Range(Cell2).Value = combinedValue
+            If Cell3 <> "" Then wsTemplate.Range(Cell3).Value = combinedValue
+            If Cell4 <> "" Then wsTemplate.Range(Cell4).Value = combinedValue
+            If Cell5 <> "" Then wsTemplate.Range(Cell5).Value = combinedValue
+            If Cell6 <> "" Then wsTemplate.Range(Cell6).Value = combinedValue
+            If Cell7 <> "" Then wsTemplate.Range(Cell7).Value = combinedValue
+            If Cell8 <> "" Then wsTemplate.Range(Cell8).Value = combinedValue
+            If Cell9 <> "" Then wsTemplate.Range(Cell9).Value = combinedValue
+            If Cell10 <> "" Then wsTemplate.Range(Cell10).Value = combinedValue
+            If Cell11 <> "" Then wsTemplate.Range(Cell11).Value = combinedValue
+            If Cell12 <> "" Then wsTemplate.Range(Cell12).Value = combinedValue
+                           
+         End If
+        End If
+    Case "toggle"
+        'トグルボタンに沿った固定の内容を転記
+        If Cell1 <> "" Then wsTemplate.Range(Cell1).Value = valueToTransfer
+        If Cell2 <> "" Then wsTemplate.Range(Cell2).Value = valueToTransfer
+        If Cell3 <> "" Then wsTemplate.Range(Cell3).Value = valueToTransfer
+        If Cell4 <> "" Then wsTemplate.Range(Cell4).Value = valueToTransfer
+        If Cell5 <> "" Then wsTemplate.Range(Cell5).Value = valueToTransfer
+        If Cell6 <> "" Then wsTemplate.Range(Cell6).Value = valueToTransfer
+        If Cell7 <> "" Then wsTemplate.Range(Cell7).Value = valueToTransfer
+        If Cell8 <> "" Then wsTemplate.Range(Cell8).Value = valueToTransfer
+        If Cell9 <> "" Then wsTemplate.Range(Cell9).Value = valueToTransfer
+        If Cell10 <> "" Then wsTemplate.Range(Cell10).Value = valueToTransfer
+        If Cell11 <> "" Then wsTemplate.Range(Cell11).Value = valueToTransfer
+        If Cell12 <> "" Then wsTemplate.Range(Cell12).Value = valueToTransfer
+        
+    Case "prefix"
+        'コンボボックスの内容にprefixを付ける場合はこちら。1事故・期間中とか
+        '付帯無しの場合は prefixを付けない
+      If valueToTransfer = "付帯無し" Then
+        If Cell1 <> "" Then wsTemplate.Range(Cell1).Value = valueToTransfer
+        If Cell2 <> "" Then wsTemplate.Range(Cell2).Value = valueToTransfer
+        If Cell3 <> "" Then wsTemplate.Range(Cell3).Value = valueToTransfer
+        If Cell4 <> "" Then wsTemplate.Range(Cell4).Value = valueToTransfer
+        If Cell5 <> "" Then wsTemplate.Range(Cell5).Value = valueToTransfer
+        If Cell6 <> "" Then wsTemplate.Range(Cell6).Value = valueToTransfer
+        If Cell7 <> "" Then wsTemplate.Range(Cell7).Value = valueToTransfer
+        If Cell8 <> "" Then wsTemplate.Range(Cell8).Value = valueToTransfer
+        If Cell9 <> "" Then wsTemplate.Range(Cell9).Value = valueToTransfer
+        If Cell10 <> "" Then wsTemplate.Range(Cell10).Value = valueToTransfer
+        If Cell11 <> "" Then wsTemplate.Range(Cell11).Value = valueToTransfer
+        If Cell12 <> "" Then wsTemplate.Range(Cell12).Value = valueToTransfer
+      Else
+        If Cell1 <> "" Then wsTemplate.Range(Cell1).Value = Prefix & valueToTransfer
+        If Cell2 <> "" Then wsTemplate.Range(Cell2).Value = Prefix & valueToTransfer
+        If Cell3 <> "" Then wsTemplate.Range(Cell3).Value = Prefix & valueToTransfer
+        If Cell4 <> "" Then wsTemplate.Range(Cell4).Value = Prefix & valueToTransfer
+        If Cell5 <> "" Then wsTemplate.Range(Cell5).Value = Prefix & valueToTransfer
+        If Cell6 <> "" Then wsTemplate.Range(Cell6).Value = Prefix & valueToTransfer
+        If Cell7 <> "" Then wsTemplate.Range(Cell7).Value = Prefix & valueToTransfer
+        If Cell8 <> "" Then wsTemplate.Range(Cell8).Value = Prefix & valueToTransfer
+        If Cell9 <> "" Then wsTemplate.Range(Cell9).Value = Prefix & valueToTransfer
+        If Cell10 <> "" Then wsTemplate.Range(Cell10).Value = Prefix & valueToTransfer
+        If Cell11 <> "" Then wsTemplate.Range(Cell11).Value = Prefix & valueToTransfer
+        If Cell12 <> "" Then wsTemplate.Range(Cell12).Value = Prefix & valueToTransfer
+      End If
+End Select
+End If
+Next i
+
+
+End Sub
+
+Private Sub Format_Cell_Value(wsTemplate As Worksheet)
+
+'個別プラン用の【個別】の文字列を削除
+'1事故・期間中付帯無しとなってる場合の調整
+For Each cell In wsTemplate.UsedRange
+         cell.Value = Replace(cell.Value, "【個別】", "")
+         cell.Value = Replace(cell.Value, "1事故・期間中付帯無し", "付帯無し")
+         cell.Value = Replace(cell.Value, "1事故・期間中金額選択", "金額選択")
+      
+Next cell
+
+End Sub
+
+'選択されたプラン内容で固定される部分を出力する、出力内容はplanシートで管理
+
+Private Sub Export_Plan(Company As String, planType As String)
+
+'プラン複数選択する予定だったが不要になったのでコメントアウト
+'planTypeは単一になったので、collection型である必要は無い
+
+Dim wsPlan As Worksheet
+Dim wsTemplate As Worksheet
+Dim lastRow As String
+Dim i As Long
+Dim coverageCell As Range
+Dim targetCell As Range
+Dim similarCell As Range
+Dim recommendCell As Range
+Dim coverageToTransfer As Variant
+Dim valueToTransfer As Variant
+Dim similarToTransfer As Variant
+Dim recommendToTransfer As Variant
+
+'シートを読み込み
+Set wsPlan = ThisWorkbook.Sheets("Plan")
+Set wsTemplate = ThisWorkbook.Sheets("Template_ALL_test")
+
+'planシートの最終行を取得
+lastRow = wsPlan.Cells(wsPlan.Rows.Count, "A").End(xlUp).Row
+
+'planシート参照して対応するセルに値を入力,loop処理
+For i = 3 To lastRow
+    'B列に入力されているセル番号に対応する位置を指定:補償名
+    Set coverageCell = wsTemplate.Range(wsPlan.Cells(i, "B").Value)
+    'J列に入力されているセル番号に対応する位置を指定：補償内容
+    Set targetCell = wsTemplate.Range(wsPlan.Cells(i, "J").Value)
+    'R列に入力されているセル番号に対応する位置を指定：類似プラン内容
+    Set similarCell = wsTemplate.Range(wsPlan.Cells(i, "R").Value)
+    'Z列に入力されているセル番号に対応する位置を指定：おすすめプラン内容
+    Set recommendCell = wsTemplate.Range(wsPlan.Cells(i, "Z").Value)
+    
+    
+    '会社とプランによって読み込みセルを分ける
+        If Company = "MS" And planType = "ベーシック" Then
+            coverageToTransfer = wsPlan.Cells(i, "C").Value
+            valueToTransfer = wsPlan.Cells(i, "K").Value
+            similarToTransfer = wsPlan.Cells(i, "S").Value
+            
+        ElseIf Company = "MS" And planType = "ワイド" Then
+            coverageToTransfer = wsPlan.Cells(i, "D").Value
+            valueToTransfer = wsPlan.Cells(i, "L").Value
+            similarToTransfer = wsPlan.Cells(i, "T").Value
+            
+        ElseIf Company = "SJ" And planType = "エコノミー" Then
+            coverageToTransfer = wsPlan.Cells(i, "E").Value
+            valueToTransfer = wsPlan.Cells(i, "M").Value
+            similarToTransfer = wsPlan.Cells(i, "U").Value
+
+        ElseIf Company = "SJ" And planType = "ワイド" Then
+            coverageToTransfer = wsPlan.Cells(i, "F").Value
+            valueToTransfer = wsPlan.Cells(i, "N").Value
+            similarToTransfer = wsPlan.Cells(i, "V").Value
+        
+        ElseIf Company = "TN" And planType = "①：施設事業活動のみ" Then
+            coverageToTransfer = wsPlan.Cells(i, "G").Value
+            valueToTransfer = wsPlan.Cells(i, "O").Value
+            similarToTransfer = wsPlan.Cells(i, "W").Value
+        
+        ElseIf Company = "TN" And planType = "②：生産物完成作業のみ" Then
+            coverageToTransfer = wsPlan.Cells(i, "H").Value
+            valueToTransfer = wsPlan.Cells(i, "P").Value
+            similarToTransfer = wsPlan.Cells(i, "X").Value
+        
+        ElseIf Company = "TN" And planType = "① + ② セット" Then
+            coverageToTransfer = wsPlan.Cells(i, "I").Value
+            valueToTransfer = wsPlan.Cells(i, "Q").Value
+            similarToTransfer = wsPlan.Cells(i, "Y").Value
+        
+        End If
+
+    'valueがあれば転記
+        If Not IsEmpty(coverageToTransfer) Then
+            coverageCell.Value = coverageToTransfer
+        End If
+
+    'valueがあれば転記
+        If Not IsEmpty(valueToTransfer) Then
+            targetCell.Value = valueToTransfer
+        End If
+    
+    'valueがあれば転記
+        If Not IsEmpty(similarToTransfer) Then
+            similarCell.Value = similarToTransfer
+        End If
+    
+    'おすすめプランについてはセルはZ列、値はAA列を参照。おすすめチェックがTrueなら転記
+        If CheckBox_AS_Plan.Value = True Then
+            recommendToTransfer = wsPlan.Cells(i, "AA").Value
+        End If
+        If Not IsEmpty(recommendToTransfer) Then
+            recommendCell.Value = recommendToTransfer
+        End If
+    
+    
+Next i
+
+End Sub
+
