@@ -1,0 +1,153 @@
+'class module: clsControlhandler
+Public WithEvents Toggle As MSForms.ToggleButton
+Public WithEvents combobox As MSForms.combobox
+'Public cmbx As MSForms.combobox
+Public ColName As String
+Public MainForm As New Main 'メインのユーザーフォームからloadcombobox読み込むため
+Private originalWidth As Single
+Private isProgrammaticChange As Boolean ' プログラムによる変更かどうかの判定
+Private isDropButtonHandled As Boolean
+Private lastDropTime As Double
+
+
+
+
+
+Private Sub Toggle_Click()
+
+'トグルがTrueのときにコンボボックスにデータをロードする
+If Toggle.Value = True Then
+
+'プラン変更でトグルをonにした場合はコンボボックスロードを無効化
+If MainForm.isPlanChange Then Exit Sub
+
+
+    Call MainForm.LoadComboBox(combobox, ColName)
+    
+Else
+'トグルがFalseのときは付帯無しと表示
+    combobox.Clear
+    combobox.AddItem "付帯無し"
+End If
+
+'一番上のデータを表示
+combobox.ListIndex = 0
+
+'プログラムによる変更ここまで
+'isProgrammaticChange = False
+
+
+End Sub
+
+'コンボボックスのドロップダウンが開いたときに幅を広げる
+Private Sub ComboBox_DropButtonClick()
+
+'連続して2回実行されることがあるので時間で管理…
+'Dim currentTime As Double
+'currentTime = Timer
+'Debug.Print "Ctime" & currentTime
+'Debug.Print "Ltime" & lastDropTime
+'Debug.Print "diff" & (currentTime - lastDropTime)
+'
+'
+''前回実行から0.5秒以内ならスキップ
+'If currentTime - lastDropTime < 10 Then Exit Sub
+'
+'lastDropTime = currentTime '処理時間を更新
+
+'元の幅
+'originalWidth = combobox.Width
+originalWidth = 90
+Debug.Print "droporiginalwidth" & originalWidth
+'最大長を見て幅を広げる
+Dim maxWidth As Single
+maxWidth = GetMaxItemWidth(combobox)
+
+If maxWidth > originalWidth Then
+    combobox.Width = maxWidth
+End If
+
+Main.Repaint
+
+End Sub
+
+'EXITしてみる
+Private Sub combobox_Exit()
+combobox.Width = 90
+End Sub
+
+
+'コンボボックスの値を選択したら元のサイズに戻す
+Private Sub ComboBox_Change()
+'プログラムによる変更であればイベントスキップ
+If isProgrammaticChange Then Exit Sub
+
+'プログラムによる変更開始
+isProgrammaticChange = True
+
+'遅延フラグをセットして、遅延処理をスケジュール
+'delayRestore = True
+'Application.OnTime Now + TimeValue("00:00:01"), "RestoreComboBoxWidth"
+
+Debug.Print "change event triggered"
+Debug.Print "originalwidth:" & originalWidth
+Debug.Print "combowidth:" & combobox.Width
+
+combobox.Width = 90
+
+Main.Premium.SetFocus
+
+'プログラムによる変更終了
+isProgrammaticChange = False
+
+End Sub
+
+'幅を戻すぜ
+Private Sub RestoreComboBoxWidth()
+If dealyRestore Then
+combobox.Width = 90
+    delayResote = False
+End If
+
+End Sub
+
+
+'最大長計算するやつ
+Private Function GetMaxItemWidth(combobox As MSForms.combobox) As Single
+Dim maxWidth As Single
+Dim tempWidth As Single
+Dim i As Integer
+
+For i = 0 To combobox.ListCount - 1
+    '幅チェック
+    tempWidth = TextWidth(combobox.List(i))
+    If tempWidth > maxWidth Then
+        maxWidth = tempWidth
+    End If
+Next i
+
+'最終的な幅
+GetMaxItemWidth = maxWidth + 20
+
+End Function
+
+
+'テキストの幅計算
+Private Function TextWidth(text As String) As Single
+Dim lblTemp As MSForms.Label
+
+Set lblTemp = Main.Controls.Add("Forms.label.1", "lblTemp", True)
+
+lblTemp.Font.Name = combobox.Font.Name
+lblTemp.Font.Size = combobox.Font.Size
+
+lblTemp.Caption = text
+lblTemp.Visible = False
+lblTemp.WordWrap = False
+lblTemp.AutoSize = True
+TextWidth = lblTemp.Width
+
+Main.Controls.Remove "lblTemp"
+
+
+End Function
