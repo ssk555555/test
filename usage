@@ -1,1 +1,9 @@
+OFF時の表現は RuleSlots の ToggleRequired / OffAction / OffActionValue / (OffPrefix/OffSuffix) に記載。
+
+ON時の置換・丸めは ValueMap に行で記載（MatchType=LE_NUM/GT_NUM も使えます）。
+
+見出し表現は RuleSlots.Prefix/Suffix で付与。
+
+呼び出しは：
+
 Call ApplyValueMapSlot("Combo_limit_Output_F23", "MS", "BP")  ' 会社/プランは任意
