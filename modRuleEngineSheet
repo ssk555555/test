@@ -1,0 +1,120 @@
+'== modRuleEngineSheet ==
+Option Explicit
+
+' PlanRules テーブル前提:
+'   RuleType("similar"/"recommend"), CandidatePlanKey, Priority,
+'   ScopeCompany, ScopePlan, Field(DataKey), Operator(HAS|NOTHAS|=|>=|<=|IN|ONEOF), Value
+
+Public Function DecidePlanFromSheet(ruleType As String, inDict As Scripting.Dictionary) As String
+    Dim lo As ListObject: Set lo = GetTable("PlanRules")
+    Dim cRT&, cPlan&, cPri&, cSC&, cSP&, cFld&, cOp&, cVal&
+    cRT = lo.ListColumns("RuleType").Index
+    cPlan = lo.ListColumns("CandidatePlanKey").Index
+    cPri = lo.ListColumns("Priority").Index
+    cSC = lo.ListColumns("ScopeCompany").Index
+    cSP = lo.ListColumns("ScopePlan").Index
+    cFld = lo.ListColumns("Field").Index
+    cOp  = lo.ListColumns("Operator").Index
+    cVal = lo.ListColumns("Value").Index
+
+    Dim buckets As Object: Set buckets = CreateObject("Scripting.Dictionary")
+    buckets.CompareMode = TextCompare
+
+    Dim r As ListRow, key$, plan$, pri$, sc$, sp$, f$, o$, v$
+    For Each r In lo.ListRows
+        If LCase$(NzStr(r.Range.Columns(cRT).Value)) = LCase$(ruleType) Then
+            plan = NzStr(r.Range.Columns(cPlan).Value)
+            pri  = NzStr(r.Range.Columns(cPri).Value)
+            sc   = NzStr(r.Range.Columns(cSC).Value)
+            sp   = NzStr(r.Range.Columns(cSP).Value)
+            f    = NzStr(r.Range.Columns(cFld).Value)
+            o    = UCase$(NzStr(r.Range.Columns(cOp).Value))
+            v    = NzStr(r.Range.Columns(cVal).Value)
+            If plan <> "" And IsNumeric(pri) And f <> "" And o <> "" Then
+                key = plan & "|" & Format$(CLng(Val(pri)), "000000") & "|" & sc & "|" & sp
+                If Not buckets.Exists(key) Then Set buckets(key) = New Collection
+                buckets(key).Add Array(f, o, v)
+            End If
+        End If
+    Next
+
+    Dim inCompany$, inPlan$
+    If inDict.Exists("CompanyKey") Then inCompany = CStr(inDict("CompanyKey"))
+    If inDict.Exists("PlanKey") Then inPlan = CStr(inDict("PlanKey"))
+
+    Dim sorted() As String: sorted = SortKeysByPriority(buckets.Keys)
+    Dim i&
+    For i = LBound(sorted) To UBound(sorted)
+        Dim parts() As String: parts = Split(sorted(i), "|")
+        Dim plan2$, pri2$, sc2$, sp2$
+        plan2 = parts(0): pri2 = parts(1): sc2 = parts(2): sp2 = parts(3)
+        If ScopeMatch(sc2, sp2, inCompany, inPlan) Then
+            If AllConditionsMatch(buckets(sorted(i)), inDict) Then
+                DecidePlanFromSheet = plan2
+                Exit Function
+            End If
+        End If
+    Next
+End Function
+
+Private Function AllConditionsMatch(conds As Collection, inDict As Scripting.Dictionary) As Boolean
+    Dim i&, it, fld$, op$, val$
+    For i = 1 To conds.Count
+        it = conds(i)
+        fld = CStr(it(0)): op = UCase$(CStr(it(1))): val = CStr(it(2))
+        If Not EvalOne(inDict, fld, op, val) Then AllConditionsMatch = False: Exit Function
+    Next
+    AllConditionsMatch = True
+End Function
+
+Private Function EvalOne(inDict As Scripting.Dictionary, fld As String, op As String, val As String) As Boolean
+    Dim exists As Boolean: exists = inDict.Exists(fld)
+    Dim raw As Variant: If exists Then raw = inDict(fld)
+
+    Select Case op
+        Case "HAS":     EvalOne = exists And UCase$(CStr(raw)) = "ON"
+        Case "NOTHAS":  EvalOne = (Not exists) Or UCase$(CStr(raw)) <> "ON"
+        Case "="
+            If IsNumeric(val) Then EvalOne = CDbl(NzDbl(raw)) = CDbl(Val(val)) _
+            Else EvalOne = CStr(raw) = val
+        Case ">=":      EvalOne = CDbl(NzDbl(raw)) >= CDbl(Val(val))
+        Case "<=":      EvalOne = CDbl(NzDbl(raw)) <= CDbl(Val(val))
+        Case "IN"
+            Dim p() As String: p = Split(val, ":")
+            If UBound(p) >= 1 Then
+                EvalOne = (CDbl(NzDbl(raw)) >= CDbl(Val(p(0)))) And (CDbl(NzDbl(raw)) <= CDbl(Val(p(1))))
+            Else
+                EvalOne = False
+            End If
+        Case "ONEOF"
+            Dim q() As String: q = Split(val, "|")
+            Dim j&: For j = LBound(q) To UBound(q)
+                If CStr(raw) = q(j) Then EvalOne = True: Exit For
+            Next
+        Case Else:      EvalOne = False
+    End Select
+End Function
+
+Private Function ScopeMatch(scCompany As String, scPlan As String, inCompany As String, inPlan As String) As Boolean
+    ScopeMatch = True
+    If Len(scCompany) > 0 Then If UCase$(scCompany) <> UCase$(inCompany) Then ScopeMatch = False
+    If Len(scPlan) > 0 Then If UCase$(scPlan) <> UCase$(inPlan) Then ScopeMatch = False
+End Function
+
+Private Function SortKeysByPriority(keys As Variant) As String()
+    Dim arr() As String, n&, i&
+    If IsEmpty(keys) Then ReDim arr(0 To -1): SortKeysByPriority = arr: Exit Function
+    n = UBound(keys) - LBound(keys) + 1
+    ReDim arr(0 To n - 1)
+    For i = 0 To n - 1: arr(i) = CStr(keys(i + LBound(keys))): Next
+    Dim a&, b&
+    For a = 0 To n - 2
+        For b = a + 1 To n - 1
+            Dim pa&, pb&
+            pa = CLng(Mid$(Split(arr(a), "|")(1), 1))
+            pb = CLng(Mid$(Split(arr(b), "|")(1), 1))
+            If pa > pb Then Dim t$: t = arr(a): arr(a) = arr(b): arr(b) = t
+        Next b
+    Next a
+    SortKeysByPriority = arr
+End Function
