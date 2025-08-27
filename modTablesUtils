@@ -1,0 +1,83 @@
+'== modTablesUtils ==
+Option Explicit
+
+' 指定のListObjectを全シートから探す
+Public Function GetTable(loName As String) As ListObject
+    Dim ws As Worksheet
+    For Each ws In ThisWorkbook.Worksheets
+        On Error Resume Next
+        Set GetTable = ws.ListObjects(loName)
+        On Error GoTo 0
+        If Not GetTable Is Nothing Then Exit Function
+    Next
+    Err.Raise vbObjectError + 101, , "Table not found: " & loName
+End Function
+
+' 文字列のNull/Empty安全化
+Public Function NzStr(v As Variant, Optional def As String = "") As String
+    If IsError(v) Or IsNull(v) Or Len(Trim$(CStr(v))) = 0 Then
+        NzStr = def
+    Else
+        NzStr = Trim$(CStr(v))
+    End If
+End Function
+
+' 数値のNull/Empty安全化
+Public Function NzDbl(v As Variant, Optional def As Double = 0#) As Double
+    If IsError(v) Or IsNull(v) Or Len(Trim$(CStr(v))) = 0 Then
+        NzDbl = def
+    Else
+        NzDbl = CDbl(Val(v))
+    End If
+End Function
+
+' "a|b|c" → 配列
+Public Function SplitBars(s As String) As Variant
+    SplitBars = Split(s, "|")
+End Function
+
+' "Sheet!A1,Sheet!B2" をセルCollectionへ
+Public Function ResolveRefToCells(refText As String) As Collection
+    Dim col As New Collection
+    Dim parts() As String: parts = Split(refText, ",")
+    Dim i&, addr$, rng As Range, c As Range
+    For i = LBound(parts) To UBound(parts)
+        addr = Trim$(parts(i))
+        If Len(addr) = 0 Then GoTo ContinueI
+        Set rng = Range(addr)
+        For Each c In rng
+            col.Add c
+        Next
+ContinueI:
+    Next
+    Set ResolveRefToCells = col
+End Function
+
+' "+0,+2" → dRow=0, dCol=2
+Public Sub ParseOffset(ByVal s As String, ByRef dRow As Long, ByRef dCol As Long)
+    Dim p() As String: p = Split(Replace$(s, " ", ""), ",")
+    dRow = CLng(Val(p(0)))
+    dCol = CLng(Val(p(1)))
+End Sub
+
+' ラベル→数値（LabelLexicon優先、無ければ数字抽出）
+Public Function CanonicalNumber(s As String) As Double
+    On Error GoTo Fallback
+    Dim lo As ListObject: Set lo = GetTable("LabelLexicon")
+    Dim cFrom&, cVal&: cFrom = lo.ListColumns("FromText").Index: cVal = lo.ListColumns("CanonicalValue").Index
+    Dim r As ListRow
+    For Each r In lo.ListRows
+        If StrComp(CStr(r.Range.Columns(cFrom).Value), s, vbTextCompare) = 0 Then
+            CanonicalNumber = CDbl(r.Range.Columns(cVal).Value)
+            Exit Function
+        End If
+    Next
+Fallback:
+    Dim t$, i&, ch$, buf$
+    t = s
+    For i = 1 To Len(t)
+        ch = Mid$(t, i, 1)
+        If ch Like "[0-9]" Then buf = buf & ch
+    Next
+    If Len(buf) > 0 Then CanonicalNumber = CDbl(buf) Else CanonicalNumber = 0#
+End Function
