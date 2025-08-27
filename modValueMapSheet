@@ -1,0 +1,235 @@
+'== modValueMapSheet ==
+Option Explicit
+
+' ■ 前提テーブル
+' RuleSlots:
+'   SlotKey, ControlKey, DataKey,
+'   SourceSheet, SourceCell,
+'   TargetMode, TargetSheet, TargetCell,
+'   CompanyScope,
+'   ToggleKey, ToggleRequired, OffAction, OffActionValue,
+'   Prefix, Suffix, OffPrefix, OffSuffix
+'
+' ValueMap:
+'   ScopeCompany, ScopePlan, SlotKey, DataKey,
+'   Priority, MatchType[EQUALS|IN_SET|CONTAINS|REGEX|ELSE|LE_NUM|GT_NUM],
+'   MatchValue, Action[COPY|SET_TEXT|SET_NUM], ActionValue, Comment
+'
+' LabelLexicon(任意):
+'   FromText, CanonicalValue, CanonicalLabel
+
+' 使い方（例）：
+'   Call ApplyValueMapSlot("Combo_limit_Output_F23", "MS", "BP")     ' 会社/プランは任意
+'   ' 第4引数に UI辞書(ctrlDict) を渡すと ToggleのON/OFFを厳密判定できます（省略時は「空欄＝OFF」簡易判定）
+
+Public Sub ApplyValueMapSlot(ByVal slotKey As String, _
+                             Optional inCompany As String = "", _
+                             Optional inPlan As String = "", _
+                             Optional ctrlDict As Variant)
+
+    Dim loSlots As ListObject: Set loSlots = GetTable("RuleSlots")
+    Dim loVal As ListObject:   Set loVal = GetTable("ValueMap")
+
+    Dim cSlot&, cCK&, cDK&, cSS&, cSC&, cTM&, cTS&, cTC&, cCS&, cTKey&, cTReq&, cOAct&, cOVal&, cPx&, cSx&, cOPx&, cOSx&
+    cSlot = loSlots.ListColumns("SlotKey").Index
+    cCK   = loSlots.ListColumns("ControlKey").Index
+    cDK   = loSlots.ListColumns("DataKey").Index
+    cSS   = loSlots.ListColumns("SourceSheet").Index
+    cSC   = loSlots.ListColumns("SourceCell").Index
+    cTM   = loSlots.ListColumns("TargetMode").Index
+    cTS   = loSlots.ListColumns("TargetSheet").Index
+    cTC   = loSlots.ListColumns("TargetCell").Index
+    cCS   = loSlots.ListColumns("CompanyScope").Index
+    cTKey = loSlots.ListColumns("ToggleKey").Index
+    cTReq = loSlots.ListColumns("ToggleRequired").Index
+    cOAct = loSlots.ListColumns("OffAction").Index
+    cOVal = loSlots.ListColumns("OffActionValue").Index
+    cPx   = loSlots.ListColumns("Prefix").Index
+    cSx   = loSlots.ListColumns("Suffix").Index
+    cOPx  = loSlots.ListColumns("OffPrefix").Index
+    cOSx  = loSlots.ListColumns("OffSuffix").Index
+
+    Dim r As ListRow, found As Boolean
+    For Each r In loSlots.ListRows
+        If StrComp(NzStr(r.Range.Columns(cSlot).Value), slotKey, vbTextCompare) <> 0 Then GoTo ContinueRow
+
+        ' スコープ（会社）一致確認（空はワイルドカード）
+        Dim cs$: cs = NzStr(r.Range.Columns(cCS).Value)
+        If Len(cs) > 0 And StrComp(cs, inCompany, vbTextCompare) <> 0 Then GoTo ContinueRow
+
+        found = True
+
+        ' 入出力情報と装飾・OFFフォールバック
+        Dim dataKey$, srcSheet$, srcCell$, tgtMode$, tgtSheet$, tgtCell$
+        Dim tKey$, toggleReq As Boolean, offAct$, offVal$, px$, sx$, offPx$, offSx$
+
+        dataKey  = NzStr(r.Range.Columns(cDK).Value)
+        srcSheet = NzStr(r.Range.Columns(cSS).Value)
+        srcCell  = NzStr(r.Range.Columns(cSC).Value)
+        tgtMode  = UCase$(NzStr(r.Range.Columns(cTM).Value))
+        tgtSheet = NzStr(r.Range.Columns(cTS).Value)
+        tgtCell  = NzStr(r.Range.Columns(cTC).Value)
+
+        tKey     = NzStr(r.Range.Columns(cTKey).Value)
+        toggleReq = (UCase$(NzStr(r.Range.Columns(cTReq).Value)) = "TRUE")
+        offAct   = UCase$(NzStr(r.Range.Columns(cOAct).Value))
+        offVal   = NzStr(r.Range.Columns(cOVal).Value)
+
+        px  = NzStr(r.Range.Columns(cPx).Value)
+        sx  = NzStr(r.Range.Columns(cSx).Value)
+        offPx = NzStr(r.Range.Columns(cOPx).Value)
+        offSx = NzStr(r.Range.Columns(cOSx).Value)
+
+        Dim srcRef$: srcRef = srcSheet & "!" & srcCell
+        Dim srcCells As Collection: Set srcCells = ResolveRefToCells(srcRef)
+
+        Dim c As Range
+        For Each c In srcCells
+            Dim inputText$: inputText = CStr(c.Value)
+
+            ' Toggle判定：辞書があればそれを優先。無ければ「空欄＝OFF」簡易判定
+            Dim isOff As Boolean
+            If toggleReq Then
+                If IsMissing(ctrlDict) Or IsEmpty(ctrlDict) Then
+                    isOff = (Len(Trim$(inputText)) = 0)
+                Else
+                    On Error Resume Next
+                    isOff = (UCase$(CStr(ctrlDict(tKey))) <> "ON")
+                    On Error GoTo 0
+                End If
+            Else
+                isOff = False
+            End If
+
+            Dim outText$
+            If isOff And Len(offAct) > 0 Then
+                ' OFF時は ValueMap を通さず即決
+                Select Case offAct
+                    Case "SET_TEXT": outText = offPx & offVal & offSx
+                    Case "SET_NUM":  outText = offPx & CStr(Val(offVal)) & offSx
+                    Case "COPY":     outText = offPx & inputText & offSx
+                    Case Else:       outText = offPx & offVal & offSx
+                End Select
+            Else
+                ' ON時：ValueMap評価 → Prefix/Suffix付与
+                Dim vmOut$: vmOut = EvalValueMap(loVal, slotKey, dataKey, inputText, inCompany, inPlan)
+                outText = px & vmOut & sx
+            End If
+
+            ' 書き込み
+            Select Case tgtMode
+                Case "OFFSET"
+                    Dim dR&, dC&: ParseOffset tgtCell, dR, dC
+                    c.Offset(dR, dC).Value = outText                        ' Source基準の相対
+                Case "RANGE"
+                    ThisWorkbook.Worksheets(tgtSheet).Range(tgtCell).Value = outText
+                Case Else
+                    Err.Raise vbObjectError + 302, , "Unknown TargetMode: " & tgtMode
+            End Select
+        Next
+ContinueRow:
+    Next
+
+    If Not found Then Err.Raise vbObjectError + 301, , "RuleSlots not found: " & slotKey
+End Sub
+
+' ValueMap評価：SlotKey一致（完全/ワイルドカード） or DataKey一致 を候補化し、Priority昇順で最初に一致
+Private Function EvalValueMap(loVal As ListObject, slotKey$, dataKey$, srcVal$, inCompany$, inPlan$) As String
+    Dim cSC&, cSP&, cK&, cDK&, cPRI&, cMT&, cMV&, cACT&, cAV&
+    cSC  = loVal.ListColumns("ScopeCompany").Index
+    cSP  = loVal.ListColumns("ScopePlan").Index
+    cK   = loVal.ListColumns("SlotKey").Index
+    cDK  = loVal.ListColumns("DataKey").Index
+    cPRI = loVal.ListColumns("Priority").Index
+    cMT  = loVal.ListColumns("MatchType").Index
+    cMV  = loVal.ListColumns("MatchValue").Index
+    cACT = loVal.ListColumns("Action").Index
+    cAV  = loVal.ListColumns("ActionValue").Index
+
+    Dim rows As New Collection, r As ListRow
+    For Each r In loVal.ListRows
+        Dim sc$, sp$, sk$, dk$
+        sc = NzStr(r.Range.Columns(cSC).Value)
+        sp = NzStr(r.Range.Columns(cSP).Value)
+        sk = NzStr(r.Range.Columns(cK).Value)
+        dk = NzStr(r.Range.Columns(cDK).Value)
+
+        ' スコープ一致（空はワイルドカード）
+        If Len(sc) > 0 And StrComp(sc, inCompany, vbTextCompare) <> 0 Then GoTo NextR
+        If Len(sp) > 0 And StrComp(sp, inPlan, vbTextCompare) <> 0 Then GoTo NextR
+
+        ' SlotKey一致（完全 or Like）または DataKey一致（空は全対象）
+        If Len(sk) > 0 Then
+            If StrComp(sk, slotKey, vbTextCompare) = 0 Then
+                rows.Add r: GoTo NextR
+            ElseIf InStr(sk, "*") > 0 Or InStr(sk, "?") > 0 Then
+                If slotKey Like sk Then rows.Add r: GoTo NextR
+            End If
+        End If
+        If Len(dk) = 0 Or StrComp(dk, dataKey, vbTextCompare) = 0 Then
+            rows.Add r
+        End If
+NextR:
+    Next
+
+    If rows.Count = 0 Then
+        EvalValueMap = srcVal$      ' デフォルトはCOPY
+        Exit Function
+    End If
+
+    ' Priority昇順ソート
+    Dim i&, j&, ri As ListRow, rj As ListRow
+    For i = 1 To rows.Count - 1
+        For j = i + 1 To rows.Count
+            Set ri = rows(i): Set rj = rows(j)
+            If CDbl(Val(ri.Range.Columns(cPRI).Value)) > CDbl(Val(rj.Range.Columns(cPRI).Value)) Then
+                rows.Remove j: rows.Add ri, , j
+                rows.Remove i: rows.Add rj, , i
+            End If
+        Next
+    Next
+
+    ' 先頭から評価してマッチしたら即返す
+    For i = 1 To rows.Count
+        Set r = rows(i)
+        Dim mType$, mVal$, act$, aVal$
+        mType = UCase$(NzStr(r.Range.Columns(cMT).Value))
+        mVal  = NzStr(r.Range.Columns(cMV).Value)
+        act   = UCase$(NzStr(r.Range.Columns(cACT).Value))
+        aVal  = NzStr(r.Range.Columns(cAV).Value)
+
+        If MatchOK(mType, mVal, srcVal$) Then
+            Select Case act
+                Case "COPY":     EvalValueMap = srcVal$
+                Case "SET_TEXT": EvalValueMap = aVal
+                Case "SET_NUM":  EvalValueMap = CStr(Val(aVal))
+                Case Else:       EvalValueMap = srcVal$
+            End Select
+            Exit Function
+        End If
+    Next
+
+    EvalValueMap = srcVal$
+End Function
+
+' マッチ種別
+Private Function MatchOK(mType$, mVal$, src$) As Boolean
+    Select Case mType
+        Case "EQUALS":   MatchOK = (src$ = mVal$)
+        Case "IN_SET"
+            Dim arr As Variant, i&
+            arr = SplitBars(mVal$)
+            For i = LBound(arr) To UBound(arr)
+                If src$ = arr(i) Then MatchOK = True: Exit Function
+            Next
+        Case "CONTAINS": MatchOK = (InStr(1, src$, mVal$, vbTextCompare) > 0)
+        Case "REGEX"
+            Dim re As Object: Set re = CreateObject("VBScript.RegExp")
+            re.Pattern = mVal$: re.IgnoreCase = True
+            MatchOK = re.Test(src$)
+        Case "LE_NUM":   MatchOK = (CanonicalNumber(src$) <= CDbl(Val(mVal$)))
+        Case "GT_NUM":   MatchOK = (CanonicalNumber(src$) >  CDbl(Val(mVal$)))
+        Case "ELSE":     MatchOK = True
+        Case Else:       MatchOK = False
+    End Select
+End Function
